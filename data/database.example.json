@@ -1,0 +1,54 @@
+{
+  "config": {
+    "mode": "autopilot",
+    "aiProvider": "gemini",
+    "geminiApiKey": "",
+    "geminiModel": "gemini-1.5-flash",
+    "openaiApiKey": "",
+    "openaiModel": "gpt-4o-mini",
+    "lineChannelSecret": "",
+    "lineAccessToken": "",
+    "gmailUser": "",
+    "gmailAppPassword": "",
+    "webhookDomain": "",
+    "activeDatabase": "airtable",
+    "autoSyncEnabled": true,
+    "autoSyncIntervalMinutes": 2,
+    "googleSheetUrl": "",
+    "googleSheetProductsGid": "0",
+    "googleSheetFaqsGid": "",
+    "googleSheetOrdersGid": "",
+    "airtableApiKey": "",
+    "airtableBaseId": "",
+    "airtableProductTable": "",
+    "airtableFaqTable": "",
+    "airtableOrderTable": "",
+    "adminPin": "1234"
+  },
+  "knowledge": {
+    "shopName": "AIZEN Store & Fashion",
+    "openingHours": "เปิดทุกวัน 09:00 - 21:00 น. (ระบบ AI ตอบแชท 24 ชม.)",
+    "contactInfo": "โทร 02-999-9999, อีเมล support@aizenstore.com",
+    "products": "รายการสินค้าตัวอย่าง",
+    "promotions": "โปรโมชั่นส่วนลดพิเศษ",
+    "payment": "โอนเงินเข้าบัญชีธนาคาร หรือพร้อมเพย์",
+    "delivery": "จัดส่งทั่วประเทศ 1-3 วันทำการ",
+    "persona": "สุภาพ เป็นมิตร อบอุ่น มีหางเสียง (ครับ/ค่ะ) ให้ข้อมูลสินค้าครบถ้วน ช่วยปิดการขายอย่างนุ่มนวล",
+    "faq": ""
+  },
+  "lineChats": [],
+  "gmailInbox": [],
+  "gmailLogs": [],
+  "airtableData": {
+    "products": [],
+    "faqs": [],
+    "orderGuides": [],
+    "lastSync": null
+  },
+  "sheetsData": {
+    "products": [],
+    "faqs": [],
+    "orderGuides": [],
+    "lastSync": null
+  }
+}
