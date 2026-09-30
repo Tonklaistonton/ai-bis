@@ -49,4 +49,13 @@ if (auth.countUsers() === 0) {
   console.log('[Preview] Demo account ready — username: demo / password: demo1234');
 }
 
+// Every install needs at least one team with at least one channel, otherwise
+// staff have nothing to see and the webhook has no room to file messages in.
+if (db.listTeams().length === 0) {
+  const { team } = db.createTeam('ทีมหลัก');
+  db.addUserToTeam(team.id, auth.listUsers()[0].id);
+  db.createChannel({ teamId: team.id, type: 'line', name: 'LINE หลัก' });
+  console.log('[Preview] Seeded default team "ทีมหลัก" with one LINE channel');
+}
+
 require('./server.js');

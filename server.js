@@ -80,7 +80,7 @@ function broadcastWs(data) {
 
 wss.on('connection', (ws, req) => {
   const cookies = auth.parseCookies(req.headers.cookie);
-  const user = auth.getSessionUser(cookies[auth.SESSION_COOKIE]);
+  const user = auth.getSessionUser(cookies[auth.SESSION_COOKIE]) || auth.getSkipLoginUser();
   if (!user) {
     // Same-origin browser sockets send the session cookie automatically, so an
     // unauthenticated socket means someone without a valid account.
@@ -117,7 +117,7 @@ app.use((req, res, next) => {
   if (!req.path.startsWith('/api/')) return next();
 
   const cookies = auth.parseCookies(req.headers.cookie);
-  const user = auth.getSessionUser(cookies[auth.SESSION_COOKIE]);
+  const user = auth.getSessionUser(cookies[auth.SESSION_COOKIE]) || auth.getSkipLoginUser();
   req.user = user;
 
   if (!user && !PUBLIC_API_PATHS.has(req.path)) {
@@ -210,23 +210,174 @@ app.all('/api/webhook/line', async (req, res) => {
 });
 
 // ==========================================
-// 2. LINE CHAT MANAGEMENT API
+// 2. LINE CHAT MANAGEMENT API & UNIFIED INBOX API
 // ==========================================
+app.get('/api/inbox/conversations', (req, res) => {
+  try {
+    const rawLineChats = db.getLineChats(100);
+    const rawEmails = db.getEmails();
+    
+    // Group LINE chats by userId
+    const lineMap = {};
+    for (const msg of rawLineChats) {
+      const uid = msg.userId || 'guest';
+      if (!lineMap[uid]) {
+        lineMap[uid] = {
+          id: uid,
+          name: msg.userName && msg.userName !== 'AIZEN Store & Fashion' ? msg.userName : (uid === 'admin' ? 'เจ้าหน้าที่ร้าน' : 'ลูกค้า LINE'),
+          avatar: msg.userAvatar || '',
+          channel: 'line',
+          channelLabel: '● LINE OA',
+          status: 'pending',
+          lead: 'ข้อความ LINE OA',
+          userCount: '1 บัญชี',
+          sync: 'SQLite Realtime',
+          history: '0 รายการ',
+          lastTimestamp: msg.timestamp,
+          messages: []
+        };
+      }
+      lineMap[uid].messages.unshift({
+        type: msg.isBot ? 'outbound' : 'inbound',
+        text: msg.text,
+        time: new Date(msg.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + (msg.isBot ? ' · ทางร้านตอบ' : ' · ลูกค้าส่งผ่าน LINE')
+      });
+      lineMap[uid].history = `${lineMap[uid].messages.length} รายการ`;
+    }
+
+    // Group Emails
+    const emailList = rawEmails.map((em, idx) => ({
+      id: em.id || `em-${idx}`,
+      name: em.senderName || em.senderEmail || 'อีเมลลูกค้า',
+      avatar: '',
+      channel: 'email',
+      channelLabel: '✉ GMAIL',
+      status: em.status === 'replied' ? 'closed' : 'pending',
+      lead: em.subject || 'สอบถามข้อมูลผ่านอีเมล',
+      userCount: '1 บัญชี',
+      sync: 'Gmail / SQLite',
+      history: '1 รายการ',
+      emailSubject: em.subject,
+      lastTimestamp: em.timestamp,
+      messages: [
+        {
+          type: 'inbound',
+          text: em.body,
+          time: new Date(em.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ` · ${em.senderEmail}`
+        },
+        ...(em.draftReply ? [{
+          type: 'outbound',
+          text: em.draftReply,
+          time: 'แบบร่างตอบกลับ'
+        }] : [])
+      ]
+    }));
+
+    const allLineConvs = Object.values(lineMap);
+    res.json({
+      success: true,
+      line: allLineConvs,
+      emails: emailList,
+      totalCount: allLineConvs.length + emailList.length
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/ai/test', requireAdmin, async (req, res) => {
+  try {
+    const { apiKey, model } = req.body || {};
+    const config = db.getConfig();
+    const useKey = apiKey || config.geminiApiKey;
+    if (!useKey) return res.json({ success: false, message: 'ยังไม่ได้ระบุ Gemini API Key' });
+    const reply = await aiService.callGeminiAPI(useKey, 'สวัสดีครับ ขอทดสอบระบบ ตอบสั้นๆ ไม่เกิน 1 ประโยค', 'line', db.getKnowledge(), {}, model);
+    if (reply) {
+      res.json({ success: true, message: 'เชื่อมต่อ Gemini สำเร็จ!', reply });
+    } else {
+      res.json({ success: false, message: 'ไม่สามารถเรียก Gemini API ได้ กรุณาตรวจ API Key' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.post('/api/line/test', requireAdmin, async (req, res) => {
+  try {
+    const { accessToken } = req.body || {};
+    const config = db.getConfig();
+    const token = accessToken || config.lineAccessToken;
+    if (!token) return res.json({ success: false, message: 'ยังไม่ได้ระบุ LINE Access Token' });
+    const resLine = await fetch('https://api.line.me/v2/bot/info', {
+      headers: { 'Authorization': `Bearer ${token.trim()}` }
+    });
+    if (resLine.ok) {
+      const data = await resLine.json();
+      res.json({ success: true, botName: data.displayName, botId: data.basicId });
+    } else {
+      const errTxt = await resLine.text();
+      res.json({ success: false, message: `LINE API Error (${resLine.status}): ${errTxt}` });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 app.get('/api/line/messages', (req, res) => {
   const limit = parseInt(req.query.limit) || 50;
-  res.json({ success: true, messages: db.getLineChats(limit) });
+  const channelIds = allowedChannelIds(req, req.query.channelId);
+  const fallback = db.defaultChannelId();
+  const messages = db
+    .getLineChats(limit)
+    .filter((m) => !channelIds || channelIds.includes(m.channelId || fallback) || m.channelId === '');
+  res.json({
+    success: true,
+    messages,
+    conversations: channelIds ? db.getConversationsForChannels(channelIds) : []
+  });
 });
+
+/**
+ * Channel scope comes from the user's teams, never from the query string alone.
+ * - omitted channelId -> every channel the user may see
+ * - supplied channelId -> that channel only, 403 if outside the user's teams
+ * Returns null when the caller may see nothing at all.
+ */
+function allowedChannelIds(req, requestedChannelId) {
+  const mine = db.getChannelsForUser(req.user).map((c) => c.id);
+  if (!requestedChannelId) return mine;
+  return mine.includes(requestedChannelId) ? [requestedChannelId] : null;
+}
+
+function forbidChannel(res) {
+  return res.status(403).json({ success: false, error: 'คุณไม่มีสิทธิ์เข้าถึงช่องทางนี้' });
+}
 
 app.post('/api/line/reply', handleLineSend);
 app.post('/api/line/send', handleLineSend);
 
 async function handleLineSend(req, res) {
   try {
-    const { userId, replyToken, text, messageId } = req.body;
+    const { userId, replyToken, text, messageId, channelId } = req.body;
     const config = db.getConfig();
 
     if (!text || !text.trim()) {
       return res.status(400).json({ error: 'Text is required' });
+    }
+
+    const channel = channelId ? db.getChannelById(channelId) : null;
+    const targetChannelId = channel ? channel.id : db.defaultChannelId();
+
+    // Strict Claim/Assign: a room owned by another staff member is closed to
+    // everyone except admins. Unassigned rooms stay claimable.
+    if (userId && userId !== 'admin') {
+      const conversation = db.ensureConversation(targetChannelId, userId, '');
+      if (!auth.canReplyToConversation(req.user, conversation)) {
+        return res.status(403).json({
+          success: false,
+          error: 'ห้องนี้อยู่ในการดูแลของเจ้าหน้าที่ท่านอื่น'
+        });
+      }
     }
 
     const cleanText = text.trim();
@@ -252,7 +403,9 @@ async function handleLineSend(req, res) {
       userName: db.getKnowledge().shopName,
       text: cleanText,
       isBot: true,
-      status: delivered ? 'delivered' : (config.lineAccessToken ? 'sent' : 'simulated')
+      status: delivered ? 'delivered' : (config.lineAccessToken ? 'sent' : 'simulated'),
+      channelId: targetChannelId,
+      conversationId: userId ? db.conversationId(targetChannelId, userId) : ''
     });
 
     broadcastWs({
@@ -551,6 +704,11 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 app.get('/api/auth/me', (req, res) => {
+  // With skip-login on there is no session, but the client still needs a user
+  // object to render, so fall back to the same one the middleware resolved.
+  if (!req.user && auth.getSkipLoginUser()) {
+    return res.json({ success: true, user: auth.getSkipLoginUser() });
+  }
   if (!req.user) return res.status(401).json({ success: false, error: 'กรุณาเข้าสู่ระบบก่อนใช้งาน' });
   // Never echo the session token back - it is the credential, and the browser
   // only ever needs to know WHO it is. This route doubles as the 401 probe the
@@ -598,18 +756,82 @@ app.delete('/api/auth/users/:id', requireAdmin, (req, res) => {
 });
 
 // ==========================================
+// 4.1.1 TEAMS, CHANNELS & CHAT OWNERSHIP
+// ==========================================
+
+app.get('/api/teams', (req, res) => {
+  res.json({ success: true, teams: auth.getVisibleTeams(req.user) });
+});
+
+app.post('/api/teams', requireAdmin, (req, res) => {
+  const result = db.createTeam(req.body && req.body.name);
+  if (result.error) return res.status(400).json({ success: false, error: result.error });
+  res.json({ success: true, team: result.team });
+});
+
+app.post('/api/teams/:id/members', requireAdmin, (req, res) => {
+  const teamId = Number(req.params.id);
+  const userId = Number(req.body && req.body.userId);
+  if (!Number.isInteger(teamId) || !Number.isInteger(userId)) {
+    return res.status(400).json({ success: false, error: 'รหัสทีมหรือผู้ใช้ไม่ถูกต้อง' });
+  }
+  if (!auth.getUserById(userId)) return res.status(404).json({ success: false, error: 'ไม่พบผู้ใช้' });
+  res.json({ success: true, members: db.addUserToTeam(teamId, userId) });
+});
+
+app.delete('/api/teams/:id/members/:userId', requireAdmin, (req, res) => {
+  res.json({
+    success: true,
+    members: db.removeUserFromTeam(Number(req.params.id), Number(req.params.userId))
+  });
+});
+
+app.get('/api/teams/:id/channels', (req, res) => {
+  const teamId = Number(req.params.id);
+  if (!auth.isTeamMember(req.user, teamId)) return forbidChannel(res);
+  res.json({ success: true, channels: db.getChannelsByTeam(teamId) });
+});
+
+app.post('/api/teams/:id/channels', requireAdmin, (req, res) => {
+  const { type, name, config } = req.body || {};
+  const result = db.createChannel({ teamId: Number(req.params.id), type, name, config });
+  if (result.error) return res.status(400).json({ success: false, error: result.error });
+  res.json({ success: true, channel: result.channel });
+});
+
+app.post('/api/conversations/:id/claim', (req, res) => {
+  const result = db.claimConversation(req.params.id, req.user.id);
+  if (result.error) {
+    return res.status(409).json({ success: false, error: result.error, takenBy: result.takenBy || null });
+  }
+  broadcastWs({ type: 'conversation_assigned', data: { conversation: result.conversation } });
+  res.json({ success: true, conversation: result.conversation });
+});
+
+app.post('/api/conversations/:id/release', (req, res) => {
+  // Admins may release anyone's room; staff only their own.
+  const result = db.releaseConversation(req.params.id, req.user.id, req.user.role === 'admin');
+  if (result.error) {
+    return res.status(403).json({ success: false, error: result.error, takenBy: result.takenBy || null });
+  }
+  broadcastWs({ type: 'conversation_released', data: { conversation: result.conversation } });
+  res.json({ success: true, conversation: result.conversation });
+});
+
+// ==========================================
 // 4.2 OPENAI API TEST ENDPOINT
 // ==========================================
-app.post('/api/openai/test', requireAdmin, async (req, res) => {
+app.post('/api/ai/suggest', async (req, res) => {
   try {
-    const { apiKey, model } = req.body || {};
-    const config = db.getConfig();
-    const useKey = apiKey || config.openaiApiKey;
-    const useModel = model || config.openaiModel || 'gpt-4o-mini';
-    const result = await aiService.testOpenAIConnection(useKey, useModel);
-    res.json(result);
+    const { message, channel, tone, subject, senderName } = req.body || {};
+    const reply = await aiService.generateReply(message || '', channel || 'line', {
+      tone: tone || 'formal',
+      subject: subject || '',
+      senderName: senderName || ''
+    });
+    res.json({ success: true, reply });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -630,8 +852,12 @@ app.get('/api/status', (req, res) => {
   });
 });
 
-// Everything that is not /api/* goes to Next.js (no static serving of the project root,
-// so data/, lib/, server.js and dotfiles are never exposed as files).
+// Serve unified-inbox.html directly at root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'unified-inbox.html'));
+});
+
+// Everything that is not /api/* or / goes to Next.js
 app.use((req, res) => {
   handle(req, res);
 });

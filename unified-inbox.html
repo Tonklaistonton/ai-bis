@@ -1403,6 +1403,212 @@
       box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
       transform: translateY(-1px);
     }
+
+    /* Admin Settings Button & Modal */
+    .btn-admin {
+      background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+      color: #ffffff !important;
+      border: 1px solid rgba(255,255,255,0.2);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3);
+    }
+    .btn-admin:hover {
+      background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%) !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(79, 70, 229, 0.45);
+    }
+    .admin-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.18s ease-out;
+    }
+    .admin-modal-backdrop.open { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .admin-modal-window {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 900px;
+      max-width: 95vw;
+      height: 85vh;
+      max-height: 820px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      animation: modalSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .admin-modal-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-subtle);
+    }
+    .admin-modal-title {
+      font-size: var(--text-md);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--fg);
+    }
+    .admin-modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--muted);
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+    .admin-modal-close:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--fg);
+    }
+    .admin-tabs-nav {
+      display: flex;
+      gap: 4px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .admin-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .admin-tab-btn:hover {
+      color: var(--fg);
+      background: var(--surface-subtle);
+    }
+    .admin-tab-btn.active {
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .admin-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .admin-panel-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .admin-card-title {
+      font-size: var(--text-base);
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--fg);
+    }
+    .admin-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .admin-form-group label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--fg-secondary);
+    }
+    .admin-form-group input, .admin-form-group select, .admin-form-group textarea {
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      color: var(--fg);
+      font-size: var(--text-sm);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .admin-form-group input:focus, .admin-form-group select:focus, .admin-form-group textarea:focus {
+      border-color: #3b82f6;
+      background: var(--surface);
+    }
+    .admin-form-hint {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .admin-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .admin-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .admin-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      color: var(--fg);
+      transition: all 0.15s;
+    }
+    .admin-btn:hover {
+      background: var(--surface);
+      border-color: var(--muted);
+    }
+    .admin-btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+    .admin-btn-primary:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #ffffff;
+    }
+    .admin-btn-test {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .admin-btn-test:hover {
+      background: #10b981;
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -1434,10 +1640,10 @@
     </div>
 
     <div class="topbar-right">
-      <button class="topbar-btn btn-simulate" onclick="simulateInbound()" title="จำลองข้อความลูกค้าทักเข้ามาในระบบ">💬 จำลองข้อความเข้า</button>
+      <button class="topbar-btn btn-admin" id="btn-admin-toggle" onclick="openAdminModal()" title="เปิดแผงตั้งค่าผู้ดูแลระบบ (API Keys, Backend, Database)">⚙️ แผงตั้งค่าแอดมิน</button>
       <div class="mode-pill">
         <span class="dot-live"></span>
-        <span>LINE & Gmail ซิงก์ปกติ</span>
+        <span id="topbar-sync-status">LINE & Gmail ซิงก์ปกติ</span>
       </div>
     </div>
   </header>
@@ -2233,18 +2439,44 @@
       }, 320);
     }
 
-    function regenerateAiSuggestion() {
+    async function regenerateAiSuggestion() {
       const aiBox = document.getElementById('ai-suggestion-box');
       if (!aiBox) return;
 
       playSound('pop');
       aiBox.classList.add('shimmer-loading');
 
-      setTimeout(() => {
+      const conv = CONV_DATA[activeConvId] || {};
+      const lastInbound = conv.messages ? [...conv.messages].reverse().find(m => m.type === 'inbound') : null;
+      const queryText = lastInbound ? lastInbound.text : (conv.lead || 'สอบถามสินค้า');
+
+      try {
+        const res = await fetch('/api/ai/suggest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: queryText,
+            channel: conv.channel || 'line',
+            subject: conv.emailSubject || '',
+            senderName: conv.name || ''
+          })
+        });
+        const data = await res.json();
         aiBox.classList.remove('shimmer-loading');
-        playSound('receive');
-        showToast('สร้างคำตอบใหม่เรียบร้อย', 'ประมวลผลผ่าน Gemini 1.5 Pro', '✦');
-      }, 450);
+        if (data.success && data.reply) {
+          aiBox.innerText = data.reply;
+          if (CONV_DATA[activeConvId]) {
+            CONV_DATA[activeConvId].aiSuggestion = data.reply;
+          }
+          playSound('receive');
+          showToast('สร้างคำตอบ AI สำเร็จ', 'อิงจากข้อมูลสินค้าและ FAQ ในระบบ', '✦');
+        } else {
+          showToast('แจ้งเตือน AI', data.error || 'ไม่สามารถสร้างคำตอบได้', '⚠️');
+        }
+      } catch (err) {
+        aiBox.classList.remove('shimmer-loading');
+        showToast('ผิดพลาด', err.message, '❌');
+      }
     }
 
     function updateStatusUI(status) {
@@ -2325,13 +2557,120 @@
 
     let isAutoReplyActive = true;
 
-    function sendMessage() {
+    async function fetchRealConversations() {
+      try {
+        const res = await fetch('/api/inbox/conversations');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.success) return;
+
+        let hasReal = false;
+        // Merge real line chats
+        if (data.line && data.line.length > 0) {
+          data.line.forEach((conv, idx) => {
+            hasReal = true;
+            const cid = `line-${conv.id}`;
+            const lastMsg = conv.messages[conv.messages.length - 1];
+            CONV_DATA[cid] = {
+              name: conv.name || `ลูกค้า LINE (${conv.id.slice(0, 8)}...)`,
+              channel: 'line',
+              channelLabel: '● LINE OA',
+              status: conv.status || 'pending',
+              id: conv.id,
+              lead: lastMsg ? lastMsg.text.slice(0, 30) : 'ข้อความ LINE OA',
+              userCount: 'LINE User',
+              sync: 'SQLite Database',
+              history: `${conv.messages.length} ข้อความ`,
+              messages: conv.messages,
+              aiSuggestion: 'กำลังวิเคราะห์คำตอบจากคลังความรู้...'
+            };
+          });
+        }
+
+        // Merge real emails
+        if (data.emails && data.emails.length > 0) {
+          data.emails.forEach((conv, idx) => {
+            hasReal = true;
+            const cid = `email-${conv.id}`;
+            const lastMsg = conv.messages[conv.messages.length - 1];
+            CONV_DATA[cid] = {
+              name: conv.name,
+              channel: 'email',
+              channelLabel: '✉ GMAIL',
+              status: conv.status,
+              id: conv.id,
+              lead: conv.lead,
+              userCount: '1 อีเมล',
+              sync: 'Gmail / SQLite',
+              history: `${conv.messages.length} ข้อความ`,
+              emailSubject: conv.emailSubject,
+              messages: conv.messages,
+              aiSuggestion: 'กำลังวิเคราะห์คำตอบจากคลังความรู้...'
+            };
+          });
+        }
+
+        if (hasReal) {
+          renderConversationsList();
+          const firstKey = Object.keys(CONV_DATA)[0];
+          if (firstKey) {
+            activeConvId = firstKey;
+            const firstItem = document.querySelector(`.conv-item[data-conv-id="${firstKey}"]`);
+            if (firstItem) selectConversation(firstKey, firstItem);
+          }
+        }
+      } catch (err) {
+        console.warn('Real conversations fetch error:', err);
+      }
+    }
+
+    function renderConversationsList() {
+      const container = document.getElementById('conv-list-container');
+      if (!container) return;
+      let html = '';
+      const keys = Object.keys(CONV_DATA);
+      keys.forEach((key, idx) => {
+        const item = CONV_DATA[key];
+        const isAct = (key === activeConvId) ? 'active' : '';
+        const pipClass = item.channel === 'email' ? 'pip-email' : 'pip-line';
+        const chBadge = item.channel === 'email' ? '<span class="badge-channel badge-email">✉ GMAIL</span>' : '<span class="badge-channel badge-line">● LINE</span>';
+        const stBadge = item.status === 'closed' ? '<span class="status-pill status-closed">ปิดเคส</span>' : '<span class="status-pill status-pending">รอตอบ</span>';
+        const initial = (item.name || 'CU').slice(0, 2);
+        const lastMsg = item.messages && item.messages.length > 0 ? item.messages[item.messages.length - 1].text : item.lead;
+        const timeStr = item.messages && item.messages.length > 0 ? (item.messages[item.messages.length - 1].time || '').split('·')[0].trim() : 'ล่าสุด';
+
+        html += `
+          <div class="conv-item ${isAct}" data-od-id="conv-item-${idx+1}" data-conv-id="${key}" data-channel="${item.channel}" data-status="${item.status}" onclick="selectConversation('${key}', this)">
+            <div class="avatar">
+              ${initial}
+              <span class="avatar-channel-pip ${pipClass}"></span>
+            </div>
+            <div class="conv-content">
+              <div class="conv-header">
+                <span class="conv-name">${item.name}</span>
+                <span class="conv-time">${timeStr}</span>
+              </div>
+              <div class="conv-snippet">
+                ${chBadge}
+                ${stBadge}
+                <span class="snippet-text">${lastMsg || ''}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+      filterConversations();
+    }
+
+    async function sendMessage() {
       const input = document.getElementById('reply-text');
       const val = input.value.trim();
       if (!val) return;
 
       const isEmail = document.getElementById('chat-view-container').classList.contains('channel-email');
       const metaChannel = isEmail ? 'ส่งผ่าน Gmail' : 'ส่งผ่าน LINE OA';
+      const conv = CONV_DATA[activeConvId] || {};
 
       playSound('send');
 
@@ -2343,14 +2682,48 @@
 
       if (CONV_DATA[activeConvId]) {
         CONV_DATA[activeConvId].messages.push(msgObj);
+        renderMessages(CONV_DATA[activeConvId]);
+      }
+      input.value = '';
+
+      // Send to REAL backend API
+      try {
+        if (!isEmail) {
+          // Send LINE real message
+          const targetUserId = conv.id && conv.id.startsWith('U') ? conv.id : '';
+          const res = await fetch('/api/line/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: targetUserId,
+              text: val
+            })
+          });
+          const resJson = await res.json();
+          if (resJson.delivered) {
+            showToast('ส่งถึง LINE ลูกค้าสำเร็จ', 'ข้อความ Push ไปยัง LINE Official Account แล้ว', '✓');
+          } else {
+            showToast('บันทึกลงระบบ SQLite แล้ว', 'สถานะข้อความถูกจัดเก็บในระบบเรียบร้อย', '✓');
+          }
+        } else {
+          // Send real email
+          const res = await fetch('/api/emails/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: conv.id || 'customer@example.com',
+              subject: `ตอบกลับ: ${conv.emailSubject || 'การติดต่อ'}`,
+              text: val
+            })
+          });
+          showToast('ส่งอีเมลตอบกลับแล้ว', `ส่งผ่าน Gmail ไปยัง ${conv.id || 'ลูกค้า'}`, '✉');
+        }
+      } catch (err) {
+        showToast('แจ้งเตือน', 'บันทึกลงระบบและหน้าจอเรียบร้อย', '✓');
       }
 
-      renderMessages(CONV_DATA[activeConvId]);
-      input.value = '';
-      showToast('ส่งข้อความเรียบร้อย', metaChannel, '✓');
-
-      // Auto-reply simulation if enabled
-      if (isAutoReplyActive) {
+      // Auto-reply simulation only if test auto reply is turned on AND not a real customer ID
+      if (isAutoReplyActive && (!conv.id || !conv.id.startsWith('U'))) {
         setTimeout(() => {
           showTyping('ลูกค้ากำลังอ่านและตอบกลับ...');
           setTimeout(() => {
@@ -2403,6 +2776,9 @@
       renderMessages(CONV_DATA['conv-1']);
     }
 
+    // Fetch real chats from SQLite DB immediately
+    fetchRealConversations();
+
     // Restore saved font size preference
     try {
       const savedFontSize = localStorage.getItem('aizen-font-size');
@@ -2410,7 +2786,367 @@
         setFontSize(savedFontSize);
       }
     } catch(e) {}
+
+    // ==========================================
+    // ADMIN SETTINGS MODAL LOGIC & BACKEND SYNC
+    // ==========================================
+    let currentAdminTab = 'api-keys';
+    let adminConfigData = {};
+
+    function openAdminModal() {
+      document.getElementById('admin-modal').classList.add('open');
+      loadAdminConfig();
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.remove('open');
+    }
+
+    function switchAdminTab(tabKey, btn) {
+      currentAdminTab = tabKey;
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+      const target = document.getElementById(`tab-${tabKey}`);
+      if (target) target.style.display = 'block';
+    }
+
+    async function loadAdminConfig() {
+      try {
+        const res = await fetch('/api/config');
+        if (!res.ok) throw new Error('ไม่สามารถโหลดคอนฟิกได้ (อาจต้องเข้าสู่ระบบแอดมิน)');
+        const data = await res.json();
+        adminConfigData = data.config || {};
+        
+        // Fill Form Fields
+        document.getElementById('cfg-gemini-key').placeholder = adminConfigData.geminiApiKey || 'กรอก Gemini API Key...';
+        document.getElementById('cfg-openai-key').placeholder = adminConfigData.openaiApiKey || 'กรอก OpenAI API Key...';
+        document.getElementById('cfg-ai-provider').value = adminConfigData.aiProvider || 'gemini';
+        document.getElementById('cfg-mode').value = adminConfigData.mode || 'copilot';
+
+        document.getElementById('cfg-line-secret').placeholder = adminConfigData.lineChannelSecret || 'LINE Channel Secret';
+        document.getElementById('cfg-line-token').placeholder = adminConfigData.lineAccessToken || 'LINE Channel Access Token';
+
+        document.getElementById('cfg-gmail-user').value = adminConfigData.gmailUser || '';
+        document.getElementById('cfg-gmail-pw').placeholder = adminConfigData.gmailAppPassword || 'Gmail 16-digit App Password';
+
+        document.getElementById('cfg-db-type').value = adminConfigData.activeDatabase || 'airtable';
+        document.getElementById('cfg-airtable-key').placeholder = adminConfigData.airtableApiKey || 'pat... (Airtable Token)';
+        document.getElementById('cfg-airtable-base').value = adminConfigData.airtableBaseId || '';
+        document.getElementById('cfg-sheets-url').value = adminConfigData.googleSheetUrl || '';
+
+        // Status update
+        updateSystemStatusBadge();
+      } catch (err) {
+        showToast('แจ้งเตือนระบบ', err.message, '⚠️');
+      }
+    }
+
+    async function updateSystemStatusBadge() {
+      try {
+        const res = await fetch('/api/status');
+        const st = await res.json();
+        const badge = document.getElementById('topbar-sync-status');
+        if (badge) {
+          const parts = [];
+          if (st.lineConnected) parts.push('LINE เชื่อมต่อ');
+          if (st.gmailConfigured) parts.push('Gmail พร้อม');
+          parts.push(`AI: ${st.aiProvider || 'gemini'}`);
+          badge.textContent = parts.join(' · ');
+        }
+      } catch(e) {}
+    }
+
+    async function saveAdminConfig() {
+      try {
+        const payload = {};
+        const gemKey = document.getElementById('cfg-gemini-key').value.trim();
+        if (gemKey) payload.geminiApiKey = gemKey;
+
+        const openKey = document.getElementById('cfg-openai-key').value.trim();
+        if (openKey) payload.openaiApiKey = openKey;
+
+        payload.aiProvider = document.getElementById('cfg-ai-provider').value;
+        payload.mode = document.getElementById('cfg-mode').value;
+
+        const lineSec = document.getElementById('cfg-line-secret').value.trim();
+        if (lineSec) payload.lineChannelSecret = lineSec;
+
+        const lineTok = document.getElementById('cfg-line-token').value.trim();
+        if (lineTok) payload.lineAccessToken = lineTok;
+
+        const gmUser = document.getElementById('cfg-gmail-user').value.trim();
+        if (gmUser !== undefined) payload.gmailUser = gmUser;
+
+        const gmPw = document.getElementById('cfg-gmail-pw').value.trim();
+        if (gmPw) payload.gmailAppPassword = gmPw;
+
+        payload.activeDatabase = document.getElementById('cfg-db-type').value;
+
+        const atKey = document.getElementById('cfg-airtable-key').value.trim();
+        if (atKey) payload.airtableApiKey = atKey;
+
+        const atBase = document.getElementById('cfg-airtable-base').value.trim();
+        if (atBase !== undefined) payload.airtableBaseId = atBase;
+
+        const shUrl = document.getElementById('cfg-sheets-url').value.trim();
+        if (shUrl !== undefined) payload.googleSheetUrl = shUrl;
+
+        const res = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ config: payload })
+        });
+        const resData = await res.json();
+        if (res.ok && resData.success) {
+          showToast('บันทึกสำเร็จ', 'อัปเดตการตั้งค่าระบบเรียบร้อยแล้ว', '✅');
+          loadAdminConfig();
+        } else {
+          showToast('ผิดพลาด', resData.error || 'ไม่สามารถบันทึกได้', '❌');
+        }
+      } catch (err) {
+        showToast('ผิดพลาด', err.message, '❌');
+      }
+    }
+
+    async function testGeminiAPI() {
+      const statusSpan = document.getElementById('test-gemini-status');
+      statusSpan.textContent = 'กำลังทดสอบ...';
+      try {
+        const key = document.getElementById('cfg-gemini-key').value.trim();
+        const res = await fetch('/api/ai/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey: key })
+        });
+        const data = await res.json();
+        statusSpan.textContent = data.success ? '✅ เชื่อมต่อ Gemini สำเร็จ' : `❌ ไม่ผ่าน: ${data.message}`;
+      } catch(e) {
+        statusSpan.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    async function testLineAPI() {
+      const statusSpan = document.getElementById('test-line-status');
+      statusSpan.textContent = 'กำลังทดสอบ...';
+      try {
+        const token = document.getElementById('cfg-line-token').value.trim();
+        const res = await fetch('/api/line/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessToken: token })
+        });
+        const data = await res.json();
+        statusSpan.textContent = data.success ? `✅ LINE OA: ${data.botName || 'เชื่อมต่อสำเร็จ'}` : `❌ ${data.message}`;
+      } catch(e) {
+        statusSpan.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    async function syncDatabaseNow() {
+      const statusSpan = document.getElementById('sync-db-status');
+      statusSpan.textContent = 'กำลังดึงข้อมูลจาก Database...';
+      try {
+        const dbType = document.getElementById('cfg-db-type').value;
+        let endpoint = '/api/airtable/sync';
+        if (dbType === 'sheets') endpoint = '/api/sheets/sync';
+        
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        const data = await res.json();
+        if (data.success) {
+          statusSpan.textContent = '✅ ซิงก์ข้อมูลเข้าระบบ SQLite เรียบร้อย!';
+          showToast('ซิงก์สำเร็จ', 'ดึงข้อมูลสินค้า, FAQ, คลังความรู้เข้า SQLite เรียบร้อย', '📥');
+        } else {
+          statusSpan.textContent = `❌ ${data.error || data.message || 'ผิดพลาด'}`;
+        }
+      } catch(e) {
+        statusSpan.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    // Auto-update status on load
+    updateSystemStatusBadge();
   </script>
+
+  <!-- Admin Settings Modal Dialog -->
+  <div class="admin-modal-backdrop" id="admin-modal" onclick="if(event.target === this) closeAdminModal()">
+    <div class="admin-modal-window">
+      <div class="admin-modal-header">
+        <div class="admin-modal-title">
+          <span>⚙️ แผงควบคุมและตั้งค่าผู้ดูแลระบบ (Admin & Developer Settings)</span>
+        </div>
+        <button class="admin-modal-close" onclick="closeAdminModal()" title="ปิดหน้าต่าง">✕</button>
+      </div>
+
+      <nav class="admin-tabs-nav">
+        <button class="admin-tab-btn active" onclick="switchAdminTab('api-keys', this)">🤖 AI & โมเดล API</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('channels', this)">💬 LINE OA & Gmail</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('database', this)">🗄️ Database (Airtable / Sheets)</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('sandbox-test', this)">🧪 จำลองและทดสอบ (Sandbox)</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('backend-routes', this)">⚡ Developer & Backend Links</button>
+      </nav>
+
+      <div class="admin-modal-body">
+        
+        <!-- Tab 1: AI Keys & Models -->
+        <div class="admin-tab-content" id="tab-api-keys">
+          <div class="admin-panel-card">
+            <div class="admin-card-title">✨ Google Gemini & OpenAI Configuration</div>
+            <div class="admin-grid-2">
+              <div class="admin-form-group">
+                <label>ผู้ให้บริการ AI เริ่มต้น (Active AI Provider)</label>
+                <select id="cfg-ai-provider">
+                  <option value="gemini">Google Gemini (ค่าเริ่มต้น แนะนำ)</option>
+                  <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label>โหมดการทำงานของบอท (Bot Operating Mode)</label>
+                <select id="cfg-mode">
+                  <option value="copilot">Copilot (สร้างแบบร่างให้เจ้าหน้าที่กดส่ง)</option>
+                  <option value="autopilot">Autopilot (ตอบกลับลูกค้าอัตโนมัติ 24 ชม.)</option>
+                  <option value="assist">Assist (แนะนำคำตอบข้างกล่องพิมพ์)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label>Google Gemini API Key</label>
+              <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." />
+              <div class="admin-form-hint">ใช้สำหรับสร้างข้อความตอบกลับอัจฉริยะ, ดึงความรู้ร้าน และวิเคราะห์เจตนาลูกค้า</div>
+            </div>
+
+            <div class="admin-form-group">
+              <label>OpenAI API Key (สำรอง)</label>
+              <input type="password" id="cfg-openai-key" placeholder="sk-..." />
+            </div>
+
+            <div class="admin-btn-row">
+              <button class="admin-btn admin-btn-test" onclick="testGeminiAPI()">🔌 ทดสอบการเชื่อมต่อ Gemini</button>
+              <span id="test-gemini-status" style="font-size: var(--text-xs); color: var(--muted);"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: LINE OA & Gmail -->
+        <div class="admin-tab-content" id="tab-channels" style="display: none;">
+          <div class="admin-panel-card">
+            <div class="admin-card-title">🟢 LINE Official Account Messaging API</div>
+            <div class="admin-form-group">
+              <label>LINE Channel Access Token (Long-lived)</label>
+              <input type="password" id="cfg-line-token" placeholder="ใส่ Access Token จาก LINE Developers Console..." />
+            </div>
+            <div class="admin-form-group">
+              <label>LINE Channel Secret</label>
+              <input type="password" id="cfg-line-secret" placeholder="Channel Secret สำหรับยืนยัน Webhook Signature..." />
+            </div>
+            <div class="admin-form-group">
+              <label>Webhook URL ที่ต้องนำไปใส่ใน LINE Developers Console</label>
+              <input type="text" readonly value="http://localhost:3000/api/webhook/line (หรือใช้ LocalTunnel URL)" style="background: var(--surface); color: var(--muted);" />
+            </div>
+            <div class="admin-btn-row">
+              <button class="admin-btn admin-btn-test" onclick="testLineAPI()">🔌 ตรวจสอบสถานะบอท LINE</button>
+              <span id="test-line-status" style="font-size: var(--text-xs); color: var(--muted);"></span>
+            </div>
+          </div>
+
+          <div class="admin-panel-card" style="margin-top: 12px;">
+            <div class="admin-card-title">📧 Gmail SMTP / IMAP</div>
+            <div class="admin-grid-2">
+              <div class="admin-form-group">
+                <label>Gmail Address</label>
+                <input type="email" id="cfg-gmail-user" placeholder="your-shop@gmail.com" />
+              </div>
+              <div class="admin-form-group">
+                <label>Gmail App Password (16 หลัก)</label>
+                <input type="password" id="cfg-gmail-pw" placeholder="xxxx xxxx xxxx xxxx" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Database & Knowledge Base -->
+        <div class="admin-tab-content" id="tab-database" style="display: none;">
+          <div class="admin-panel-card">
+            <div class="admin-card-title">🗄️ แหล่งข้อมูลสินค้าและ FAQ (Database Integration)</div>
+            <div class="admin-form-group">
+              <label>ฐานข้อมูลหลักที่ใช้งาน (Active Database)</label>
+              <select id="cfg-db-type">
+                <option value="airtable">Airtable Base (ซิงก์ตาราง Products, FAQs, Guides)</option>
+                <option value="sheets">Google Sheets (ซิงก์จาก Sheet สาธารณะ / Webhook)</option>
+                <option value="both">ใช้งานร่วมกันทั้งคู่ (Both)</option>
+              </select>
+            </div>
+
+            <div class="admin-grid-2">
+              <div class="admin-form-group">
+                <label>Airtable Personal Access Token</label>
+                <input type="password" id="cfg-airtable-key" placeholder="pat..." />
+              </div>
+              <div class="admin-form-group">
+                <label>Airtable Base ID</label>
+                <input type="text" id="cfg-airtable-base" placeholder="appvGIwch0gFueHpo" />
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label>Google Sheets URL / Publish Link</label>
+              <input type="text" id="cfg-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/..." />
+            </div>
+
+            <div class="admin-btn-row">
+              <button class="admin-btn admin-btn-test" onclick="syncDatabaseNow()">🔄 สั่งดึงและซิงก์ฐานข้อมูลทันที (Sync Now)</button>
+              <span id="sync-db-status" style="font-size: var(--text-xs); color: var(--muted);"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Sandbox Testing & Simulation -->
+        <div class="admin-tab-content" id="tab-sandbox-test" style="display: none;">
+          <div class="admin-panel-card">
+            <div class="admin-card-title">🧪 โหมดจำลองข้อความทดสอบ (Sandbox Simulator)</div>
+            <p style="font-size: var(--text-xs); color: var(--muted); margin-bottom: 14px;">
+              ส่วนนี้ถูกแยกออกจากหน้าทำงานจริง เพื่อให้แอดมินหรือเดฟใช้ทดสอบการรับ-ส่ง การทำงานของ AI และการแจ้งเตือนได้โดยไม่รบกวนหน้าแชทหลัก
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="admin-btn btn-simulate" onclick="simulateInbound()" title="จำลองข้อความลูกค้าทักเข้ามา">💬 ยิงข้อความจำลองเข้าแชท (Simulate Inbound)</button>
+                <span style="font-size: var(--text-xs); color: var(--muted);">จำลองคำถามจากลูกค้าและทดสอบ AI Auto-reply</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
+                <button class="admin-btn" onclick="fetchRealConversations(); showToast('รีเฟรชข้อมูล', 'ดึงข้อความล่าสุดจากฐานข้อมูล SQLite เรียบร้อย', '🔄');">🔄 ซิงก์ข้อความจริงจาก SQLite อีกครั้ง</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Backend Routes & Links -->
+        <div class="admin-tab-content" id="tab-backend-routes" style="display: none;">
+          <div class="admin-panel-card">
+            <div class="admin-card-title">⚡ ลิงก์เครื่องมือระบบและแผงควบคุมหลังบ้าน</div>
+            <p style="font-size: var(--text-xs); color: var(--muted); margin-bottom: 12px;">คุณสามารถคลิกลิงก์เพื่อเปิดดูหรือทดสอบ Endpoint ต่างๆ ของเซิร์ฟเวอร์ Express / Next.js ได้โดยตรง</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <a href="/api/status" target="_blank" class="admin-btn">🌐 ตรวจสอบสถานะเซิร์ฟเวอร์ (/api/status) ↗</a>
+              <a href="/api/line/messages" target="_blank" class="admin-btn">💬 ข้อความ LINE ล่าสุดใน SQLite (/api/line/messages) ↗</a>
+              <a href="/api/config" target="_blank" class="admin-btn">⚙️ JSON Config ปัจจุบัน (/api/config) ↗</a>
+              <a href="/settings" target="_blank" class="admin-btn">🛠️ หน้าจัดการผู้ใช้และทีมฉบับเต็ม (/settings) ↗</a>
+              <a href="/knowledge" target="_blank" class="admin-btn">📚 หน้าจัดการคลังความรู้ฉบับเต็ม (/knowledge) ↗</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface-subtle); display: flex; justify-content: flex-end; gap: 8px;">
+        <button class="admin-btn" onclick="closeAdminModal()">ยกเลิก</button>
+        <button class="admin-btn admin-btn-primary" onclick="saveAdminConfig()">💾 บันทึกการตั้งค่าทั้งหมด</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Confetti Canvas for Celebrating Resolved Cases -->
   <canvas id="confetti-canvas"></canvas>

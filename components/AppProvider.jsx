@@ -60,6 +60,13 @@ export default function AppProvider({ children }) {
       try {
         const res = await fetch('/api/auth/me', { signal: ctrl.signal });
         if (!res.ok) {
+          // Skip-login installs answer /api/auth/me with a user instead of a 401,
+          // so landing straight on /login or /setup would trap them in a loop.
+          const path = window.location.pathname;
+          if (path === '/login' || path === '/setup') {
+            window.location.replace('/');
+            return;
+          }
           handleUnauthorized();
           return;
         }
