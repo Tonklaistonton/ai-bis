@@ -176,7 +176,7 @@ const LineSimulator = {
     // Filter messages for active session, or display all recent
     let displayChats = this.allChats;
     if (this.activeUserId) {
-      displayChats = this.allChats.filter(c => c.userId === this.activeUserId || c.isBot);
+      displayChats = this.allChats.filter(c => c.userId === this.activeUserId);
     }
 
     const ordered = [...displayChats].reverse();
@@ -196,18 +196,14 @@ const LineSimulator = {
     const text = this.inputBox.value.trim();
     if (!text) return;
 
-    this.inputBox.value = "";
-
-    // Target active customer (e.g. Tonton) or find latest active LINE user
-    let targetUserId = this.activeUserId;
-    if (!targetUserId || targetUserId === "admin" || targetUserId === "unknown") {
-      const userChat = this.allChats.find(c => c.userId && c.userId.startsWith("U"));
-      if (userChat) targetUserId = userChat.userId;
+    if (this.sending) return;
+    const targetUserId = this.activeUserId;
+    if (!targetUserId || !this.allChats.some(c => c.userId === targetUserId && !c.isBot)) {
+      window.App?.showToast("กรุณาเลือกห้องลูกค้าก่อนส่ง", "error");
+      return;
     }
-    if (!targetUserId) targetUserId = "Uc17ea54a77a4bacc38249dd89d01d6ec";
-
-    // Show message immediately on the RIGHT (Admin Outgoing)
-    this.addAdminMessage(text);
+    this.sending = true;
+    if (this.sendBtn) this.sendBtn.disabled = true;
 
     // Dispatch real push message to customer's LINE app
     try {
@@ -221,15 +217,15 @@ const LineSimulator = {
       });
 
       const data = await res.json();
-      if (res.ok && data.delivered) {
-        window.App?.showToast("✓ ส่งข้อความเข้าแอป LINE ลูกค้าเรียบร้อยแล้ว", "success");
-        window.App?.logTerminal("ADMIN_SENT", `Delivered to LINE: "${text}"`, "tag-line");
-      } else {
-        window.App?.showToast("✓ ส่งข้อความและบันทึกในระบบแล้ว", "info");
-      }
+      if (!res.ok || !data.delivered) throw new Error(data.error || "LINE ไม่ยืนยันการรับข้อความ");
+      if (this.inputBox.value.trim() === text) this.inputBox.value = "";
+      window.App?.showToast("LINE รับข้อความแล้ว", "success");
+      await this.loadMessagesFromServer();
     } catch (e) {
-      console.error("[Send Message Error]", e);
-      window.App?.showToast("⚠️ เกิดข้อผิดพลาดในการส่งข้อความ", "error");
+      window.App?.showToast(e.message || "ส่งข้อความไม่สำเร็จ", "error");
+    } finally {
+      this.sending = false;
+      if (this.sendBtn) this.sendBtn.disabled = false;
     }
   },
 
@@ -237,7 +233,7 @@ const LineSimulator = {
   addAdminMessage(text, playAudio = true, customTime = null) {
     if (!this.chatContainer) return;
     const timeStr = customTime || this.getCurrentTime();
-    const formattedText = text.replace(/\n/g, "<br>");
+    const formattedText = this.escapeHtml(text).replace(/\n/g, "<br>");
     const msgEl = document.createElement("div");
     msgEl.className = "chat-bubble-row admin-row";
     msgEl.innerHTML = `
@@ -257,7 +253,7 @@ const LineSimulator = {
   addCustomerMessage(text, userName = "ลูกค้า", playAudio = true, customTime = null) {
     if (!this.chatContainer) return;
     const timeStr = customTime || this.getCurrentTime();
-    const formattedText = text.replace(/\n/g, "<br>");
+    const formattedText = this.escapeHtml(text).replace(/\n/g, "<br>");
     const msgEl = document.createElement("div");
     msgEl.className = "chat-bubble-row customer-row";
     msgEl.innerHTML = `
