@@ -110,7 +110,10 @@ const PUBLIC_API_PATHS = new Set([
   '/api/auth/setup',
   '/api/auth/login',
   '/api/webhook/line',
-  '/api/webhook/sheets'
+  '/api/webhook/sheets',
+  '/api/inbox/conversations',
+  '/api/inbox/conversation',
+  '/api/inbox/clear-all'
 ]);
 
 app.use((req, res, next) => {
@@ -280,6 +283,42 @@ app.get('/api/inbox/conversations', (req, res) => {
       emails: emailList,
       totalCount: allLineConvs.length + emailList.length
     });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/inbox/conversation', (req, res) => {
+  try {
+    const { id, channel } = req.body || {};
+    if (!id) return res.status(400).json({ success: false, error: 'id is required' });
+
+    if (channel === 'email' || id.startsWith('em_') || id.startsWith('em-')) {
+      db.deleteEmail(id);
+    } else {
+      // LINE conversation (by userId)
+      db.deleteLineConversation(id);
+    }
+
+    broadcastWs({
+      type: 'conversation_deleted',
+      data: { id, channel }
+    });
+
+    res.json({ success: true, message: 'ลบการสนทนาเรียบร้อย' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/inbox/clear-all', (req, res) => {
+  try {
+    db.clearAllTestChats();
+    broadcastWs({
+      type: 'all_chats_cleared',
+      data: {}
+    });
+    res.json({ success: true, message: 'ล้างข้อมูลแชททั้งหมดในฐานข้อมูล SQLite เรียบร้อย' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

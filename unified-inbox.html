@@ -1404,6 +1404,50 @@
       transform: translateY(-1px);
     }
 
+    /* Context Menu for Right-Click Delete */
+    .custom-context-menu {
+      position: fixed;
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
+      padding: 4px;
+      z-index: 99999;
+      min-width: 170px;
+      animation: menuPop 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes menuPop {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .context-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--fg);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .context-menu-item:hover {
+      background: var(--surface-subtle);
+    }
+    .context-menu-item.danger {
+      color: #ef4444;
+    }
+    .context-menu-item.danger:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .context-menu-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
     /* Admin Settings Button & Modal */
     .btn-admin {
       background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
@@ -1609,6 +1653,52 @@
       background: #10b981;
       color: #ffffff;
     }
+
+    /* Custom Right-Click Context Menu */
+    .custom-context-menu {
+      position: fixed;
+      z-index: 9999;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      padding: 4px;
+      min-width: 170px;
+      display: none;
+      backdrop-filter: blur(8px);
+      animation: menuFadeIn 0.12s ease-out;
+    }
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .context-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: var(--text-xs);
+      color: var(--fg);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .context-menu-item:hover {
+      background: var(--surface-subtle);
+    }
+    .context-menu-item.danger {
+      color: #ef4444;
+    }
+    .context-menu-item.danger:hover {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+    .context-menu-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
   </style>
 </head>
 <body>
@@ -1666,99 +1756,11 @@
       </div>
 
       <div class="conv-list" id="conv-list-container">
-        <!-- Item 1 (Active) -->
-        <div class="conv-item active" data-od-id="conv-item-1" data-conv-id="conv-1" data-channel="line" data-status="pending" onclick="selectConversation('conv-1', this)">
-          <div class="avatar">
-            สม
-            <span class="avatar-channel-pip pip-line" title="LINE OA"></span>
-          </div>
-          <div class="conv-content">
-            <div class="conv-header">
-              <span class="conv-name">คุณสมชาย พาณิชย์</span>
-              <span class="conv-time">10:42</span>
-            </div>
-            <div class="conv-snippet">
-              <span class="badge-channel badge-line">● LINE</span>
-              <span class="status-pill status-pending">รอตอบ</span>
-              <span class="snippet-text">สนใจสอบถามแพ็กเกจ Enterprise มีรอบอบรมวันไหนบ้างครับ?</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 2 -->
-        <div class="conv-item" data-od-id="conv-item-2" data-conv-id="conv-2" data-channel="email" data-status="pending" onclick="selectConversation('conv-2', this)">
-          <div class="avatar">
-            พั
-            <span class="avatar-channel-pip pip-email" title="Gmail"></span>
-          </div>
-          <div class="conv-content">
-            <div class="conv-header">
-              <span class="conv-name">พัชราพร คลินิกเวชกรรม</span>
-              <span class="conv-time">10:15</span>
-            </div>
-            <div class="conv-snippet">
-              <span class="badge-channel badge-email">✉ GMAIL</span>
-              <span class="status-pill status-pending">รอตอบ</span>
-              <span class="snippet-text">ขอใบเสนอราคาต่ออายุสมาชิกรายปี สำหรับ 5 สาขา</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 3 -->
-        <div class="conv-item" data-od-id="conv-item-3" data-conv-id="conv-3" data-channel="line" data-status="pending" onclick="selectConversation('conv-3', this)">
-          <div class="avatar">
-            กิต
-            <span class="avatar-channel-pip pip-line" title="LINE OA"></span>
-          </div>
-          <div class="conv-content">
-            <div class="conv-header">
-              <span class="conv-name">กิตติศักดิ์ โลจิสติกส์</span>
-              <span class="conv-time">09:50</span>
-            </div>
-            <div class="conv-snippet">
-              <span class="badge-channel badge-line">● LINE</span>
-              <span class="status-pill status-pending">รอตอบ</span>
-              <span class="snippet-text">แนบสลิปโอนเงินให้ในแชทแล้วครับ รบกวนช่วยตรวจสอบยอด</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 4 -->
-        <div class="conv-item" data-od-id="conv-item-4" data-conv-id="conv-4" data-channel="email" data-status="closed" onclick="selectConversation('conv-4', this)">
-          <div class="avatar">
-            SC
-            <span class="avatar-channel-pip pip-email" title="Gmail"></span>
-          </div>
-          <div class="conv-content">
-            <div class="conv-header">
-              <span class="conv-name">บจก. สยามคอมเมิร์ซ</span>
-              <span class="conv-time">เมื่อวาน</span>
-            </div>
-            <div class="conv-snippet">
-              <span class="badge-channel badge-email">✉ GMAIL</span>
-              <span class="status-pill status-closed">ปิดการสนทนา</span>
-              <span class="snippet-text">ยืนยันการรับส่ง Webhook กับระบบคลังสินค้าเสร็จสมบูรณ์</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 5 -->
-        <div class="conv-item" data-od-id="conv-item-5" data-conv-id="conv-5" data-channel="line" data-status="closed" onclick="selectConversation('conv-5', this)">
-          <div class="avatar">
-            ธี
-            <span class="avatar-channel-pip pip-line" title="LINE OA"></span>
-          </div>
-          <div class="conv-content">
-            <div class="conv-header">
-              <span class="conv-name">คุณธีรเดช เครื่องดื่มสากล</span>
-              <span class="conv-time">เมื่อวาน</span>
-            </div>
-            <div class="conv-snippet">
-              <span class="badge-channel badge-line">● LINE</span>
-              <span class="status-pill status-closed">ปิดการสนทนา</span>
-              <span class="snippet-text">ได้รับกุญแจ API พร้อมคู่มือแนะนำเรียบร้อยแล้ว ขอบคุณครับ</span>
-            </div>
-          </div>
+        <!-- Dynamic conversations rendered via JavaScript -->
+        <div id="conv-empty-state" style="padding: 32px 16px; text-align: center; color: var(--muted); font-size: var(--text-xs);">
+          <div style="font-size: 28px; margin-bottom: 8px;">💬</div>
+          <div>ยังไม่มีการสนทนาในระบบ</div>
+          <div style="margin-top: 4px; font-size: 11px; opacity: 0.7;">เมื่อมีข้อความ LINE หรืออีเมลเข้ามา จะปรากฏที่นี่</div>
         </div>
       </div>
     </aside>
@@ -1767,39 +1769,21 @@
     <section class="chat-view channel-line" id="chat-view-container" data-od-id="chat-main">
       <div class="chat-header">
         <div class="chat-user-meta">
-          <span class="chat-title-text" id="active-chat-title">คุณสมชาย พาณิชย์</span>
-          <span class="badge-channel badge-line badge-solid" id="active-chat-channel">● LINE OA</span>
-          <span class="status-badge" id="active-chat-status" style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;">• รอเจ้าหน้าที่ตอบ</span>
+          <span class="chat-title-text" id="active-chat-title">ยังไม่ได้เลือกบทสนทนา</span>
+          <span class="badge-channel badge-line badge-solid" id="active-chat-channel" style="display: none;">● LINE OA</span>
+          <span class="status-badge" id="active-chat-status" style="display: none;">• รอเจ้าหน้าที่ตอบ</span>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="style-hint-pill" id="active-chat-id">U48a1290f...</span>
-          <button class="btn-action-ghost" id="btn-toggle-status" onclick="toggleCaseStatus()">✓ ปิดการสนทนานี้</button>
+          <span class="style-hint-pill" id="active-chat-id" style="display: none;">-</span>
+          <button class="btn-action-ghost" id="btn-toggle-status" onclick="toggleCaseStatus()" style="display: none;">✓ ปิดการสนทนานี้</button>
         </div>
       </div>
 
       <div class="message-stream" id="message-container">
-        <!-- Message 1 -->
-        <div class="msg-group inbound">
-          <div class="msg-bubble">
-            สวัสดีครับ สนใจติดตั้งระบบ AIZEN ให้ทีมงานดูแลลูกค้า 6 ท่านใช้งาน พร้อมเชื่อมต่อ LINE OA ครับ
-          </div>
-          <div class="msg-meta">10:40 · ลูกค้าส่งผ่าน LINE OA</div>
-        </div>
-
-        <!-- Message 2 -->
-        <div class="msg-group outbound">
-          <div class="msg-bubble">
-            สวัสดีครับ ยินดีให้บริการครับ ระบบ AIZEN รองรับการทำงานร่วมกันของเจ้าหน้าที่หลายท่านพร้อมกัน และสามารถเชื่อมต่อ LINE Messaging API เพื่อเริ่มใช้งานได้ทันทีครับ
-          </div>
-          <div class="msg-meta">10:41 · เจ้าหน้าที่บริการลูกค้า</div>
-        </div>
-
-        <!-- Message 3 -->
-        <div class="msg-group inbound">
-          <div class="msg-bubble">
-            สนใจสอบถามแพ็กเกจ Enterprise มีรอบอบรมการใช้งานวันไหนบ้างครับ และมีคู่มือภาษาไทยไหม?
-          </div>
-          <div class="msg-meta">10:42 · ลูกค้าส่งผ่าน LINE OA</div>
+        <div id="messages-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--muted); text-align: center; padding: 24px;">
+          <div style="font-size: 36px; margin-bottom: 12px; opacity: 0.7;">💬</div>
+          <div style="font-size: var(--text-base); font-weight: 600; margin-bottom: 4px; color: var(--fg);">ไม่มีข้อความที่เลือก</div>
+          <div style="font-size: var(--text-xs); opacity: 0.8; max-width: 320px;">เลือกการสนทนาจากแถบด้านซ้าย หรือรอข้อความใหม่จากลูกค้า</div>
         </div>
       </div>
 
@@ -1894,95 +1878,26 @@
 
   </main>
 
+  <!-- Right-Click Context Menu for Conversations -->
+  <div class="custom-context-menu" id="custom-context-menu">
+    <div class="context-menu-item" onclick="toggleStatusFromContextMenu()">
+      <span id="ctx-status-icon">✓</span>
+      <span id="ctx-status-text">ปิด/เปิดเคสนี้</span>
+    </div>
+    <div class="context-menu-divider"></div>
+    <div class="context-menu-item danger" onclick="confirmDeleteTargetConv()">
+      <span>🗑️</span>
+      <span>ลบการสนทนานี้ถาวร</span>
+    </div>
+  </div>
+
   <script>
     let currentFilter = 'all';
-    let currentItemElem = document.querySelector('.conv-item.active');
-    let activeConvId = 'conv-1';
+    let currentItemElem = null;
+    let activeConvId = null;
+    let contextMenuTargetId = null;
 
-    const CONV_DATA = {
-      'conv-1': {
-        name: 'คุณสมชาย พาณิชย์',
-        channel: 'line',
-        channelLabel: '● LINE OA',
-        status: 'pending',
-        id: 'U48a1290f...',
-        lead: 'สนใจแพ็กเกจระดับองค์กร',
-        userCount: '6 บัญชี',
-        sync: 'Google Sheets ปกติ',
-        history: '3 รายการ',
-        messages: [
-          { type: 'inbound', text: 'สวัสดีครับ สนใจติดตั้งระบบ AIZEN ให้ทีมงานดูแลลูกค้า 6 ท่านใช้งาน พร้อมเชื่อมต่อ LINE OA ครับ', time: '10:40 · ลูกค้าส่งผ่าน LINE OA' },
-          { type: 'outbound', text: 'สวัสดีครับ ยินดีให้บริการครับ ระบบ AIZEN รองรับการทำงานร่วมกันของเจ้าหน้าที่หลายท่านพร้อมกัน และสามารถเชื่อมต่อ LINE Messaging API เพื่อเริ่มใช้งานได้ทันทีครับ', time: '10:41 · เจ้าหน้าที่บริการลูกค้า' },
-          { type: 'inbound', text: 'สนใจสอบถามแพ็กเกจ Enterprise มีรอบอบรมการใช้งานวันไหนบ้างครับ และมีคู่มือภาษาไทยไหม?', time: '10:42 · ลูกค้าส่งผ่าน LINE OA' }
-        ],
-        aiSuggestion: 'แพ็กเกจ Enterprise มีรอบอบรมออนไลน์ทุกวันอังคารและพฤหัสบดี เวลา 14:00 น. ครับ พร้อมคู่มือภาษาไทยฉบับสมบูรณ์ และมีทีมงานเทคนิคคอยดูแลตลอดการติดตั้งครับ'
-      },
-      'conv-2': {
-        name: 'พัชราพร คลินิกเวชกรรม',
-        channel: 'email',
-        channelLabel: '✉ GMAIL',
-        status: 'pending',
-        id: 'contact@patchara-clinic.com',
-        lead: 'ขอใบเสนอราคาต่ออายุ',
-        userCount: '5 สาขา (12 บัญชี)',
-        sync: 'Airtable Sync เรียบร้อย',
-        history: '5 รายการ',
-        emailSubject: 'ขอใบเสนอราคาต่ออายุสมาชิกรายปี สำหรับ 5 สาขา',
-        messages: [
-          { type: 'inbound', text: 'เรียน ทีมงาน AIZEN,\n\nทางคลินิกต้องการต่ออายุการใช้งานระบบ AIZEN v2.0 สำหรับแพทย์และเจ้าหน้าที่ประจำสาขารวม 5 สาขา ขอความกรุณาออกใบเสนอราคาพร้อมรายละเอียดส่วนลดรายปีให้ด้วยค่ะ\n\nขอแสดงความนับถือ,\nพญ. พัชราพร', time: '10:15 · contact@patchara-clinic.com' },
-          { type: 'outbound', text: 'เรียน คุณหมอพัชราพร,\n\nทีมงานได้รับคำขอเรียบร้อยแล้วครับ กำลังจัดทำใบเสนอราคาแพ็กเกจ Multi-Branch 5 สาขา พร้อมส่วนลดรายปี 15% และจะส่งไฟล์ PDF แนบกลับไปทางอีเมลนี้ภายใน 30 นาทีครับ', time: '10:18 · เจ้าหน้าที่ฝ่ายขาย' }
-        ],
-        aiSuggestion: 'จัดเตรียมใบเสนอราคาแพ็กเกจ 5 สาขา มูลค่าส่วนลด 15% พร้อมรายละเอียดการรับชำระผ่านช่องทางธนาคารและใบกำกับภาษีเรียบร้อยครับ'
-      },
-      'conv-3': {
-        name: 'กิตติศักดิ์ โลจิสติกส์',
-        channel: 'line',
-        channelLabel: '● LINE OA',
-        status: 'pending',
-        id: 'U91bc7412...',
-        lead: 'ตรวจสอบหลักฐานการชำระเงิน',
-        userCount: '3 บัญชี',
-        sync: 'Google Sheets ปกติ',
-        history: '2 รายการ',
-        messages: [
-          { type: 'inbound', text: 'แนบสลิปโอนเงินให้ในแชทแล้วครับ ยอด 14,900 บาท สำหรับแพ็กเกจ Professional รบกวนช่วยตรวจสอบยอดให้ด้วยครับ', time: '09:50 · ลูกค้าส่งผ่าน LINE OA' }
-        ],
-        aiSuggestion: 'ได้รับหลักฐานการโอนเงินเรียบร้อยแล้วครับ ตรวจสอบยอด 14,900 บาท ถูกต้อง และเปิดสิทธิ์การใช้งานระบบให้ทันทีครับ'
-      },
-      'conv-4': {
-        name: 'บจก. สยามคอมเมิร์ซ',
-        channel: 'email',
-        channelLabel: '✉ GMAIL',
-        status: 'closed',
-        id: 'dev@siamcommerce.co.th',
-        lead: 'เชื่อมต่อระบบสำเร็จ',
-        userCount: '1 บัญชีผู้ดูแล',
-        sync: 'Webhook / SQLite',
-        history: '8 รายการ',
-        emailSubject: 'ยืนยันการรับส่ง Webhook กับระบบคลังสินค้าเสร็จสมบูรณ์',
-        messages: [
-          { type: 'inbound', text: 'สวัสดีครับ ทีมวิศวกรได้ทดสอบรับ Webhook จาก AIZEN ไปยังระบบ ERP ของเราแล้ว ทุกสถานะส่งครบถ้วน ขอปิดเคสเชื่อมต่อนี้ครับ', time: 'เมื่อวาน 16:30 · dev@siamcommerce.co.th' },
-          { type: 'outbound', text: 'ขอบคุณมากครับ หากต้องการทดสอบ endpoint เพิ่มเติม สามารถติดต่อทีมงานได้ตลอดเวลาครับ', time: 'เมื่อวาน 16:35 · เจ้าหน้าที่เทคนิค' }
-        ],
-        aiSuggestion: 'เคสนี้ได้รับการยืนยันการเชื่อมต่อเสร็จสมบูรณ์แล้ว ไม่จำเป็นต้องดำเนินการเพิ่มเติมครับ'
-      },
-      'conv-5': {
-        name: 'คุณธีรเดช เครื่องดื่มสากล',
-        channel: 'line',
-        channelLabel: '● LINE OA',
-        status: 'closed',
-        id: 'U23901aef...',
-        lead: 'ติดตั้งพร้อมใช้งาน',
-        userCount: '2 บัญชี',
-        sync: 'Google Sheets ปกติ',
-        history: '1 รายการ',
-        messages: [
-          { type: 'inbound', text: 'ได้รับกุญแจ API พร้อมคู่มือแนะนำเรียบร้อยแล้ว ขอบคุณทีมงานมากครับ ตอบรวดเร็วมาก', time: 'เมื่อวาน 14:10 · ลูกค้าส่งผ่าน LINE OA' },
-          { type: 'outbound', text: 'ยินดีเป็นอย่างยิ่งครับ หากมีข้อสงสัยการใช้งาน สอบถามได้ตลอด 24 ชม. ครับ', time: 'เมื่อวาน 14:12 · เจ้าหน้าที่บริการลูกค้า' }
-        ],
-        aiSuggestion: 'ขอบคุณที่ไว้วางใจใช้บริการ AIZEN ครับ หากมีข้อสงสัยสอบถามเพิ่มเติมได้ตลอดเวลาครับ'
-      }
-    };
+    const CONV_DATA = {};
 
     // Theme Switcher Function
     function switchTheme(themeKey, btn) {
@@ -2048,56 +1963,219 @@
       });
     }
 
-    function selectConversation(id, elem) {
+    function clearActiveChat() {
+      activeConvId = null;
+      currentItemElem = null;
       document.querySelectorAll('.conv-item').forEach(i => i.classList.remove('active'));
-      elem.classList.add('active');
-      currentItemElem = elem;
+      
+      const titleElem = document.getElementById('active-chat-title');
+      if (titleElem) titleElem.innerText = 'ยังไม่ได้เลือกบทสนทนา';
+      
+      const chBadge = document.getElementById('active-chat-channel');
+      if (chBadge) chBadge.style.display = 'none';
+
+      const stBadge = document.getElementById('active-chat-status');
+      if (stBadge) stBadge.style.display = 'none';
+
+      const idBadge = document.getElementById('active-chat-id');
+      if (idBadge) {
+        idBadge.innerText = '-';
+        idBadge.style.display = 'none';
+      }
+
+      const toggleBtn = document.getElementById('btn-toggle-status');
+      if (toggleBtn) toggleBtn.style.display = 'none';
+
+      const msgContainer = document.getElementById('message-container');
+      if (msgContainer) {
+        msgContainer.innerHTML = `
+          <div id="messages-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--muted); text-align: center; padding: 24px;">
+            <div style="font-size: 36px; margin-bottom: 12px; opacity: 0.7;">💬</div>
+            <div style="font-size: var(--text-base); font-weight: 600; margin-bottom: 4px; color: var(--fg);">ไม่มีข้อความที่เลือก</div>
+            <div style="font-size: var(--text-xs); opacity: 0.8; max-width: 320px;">เลือกการสนทนาจากแถบด้านซ้าย หรือรอข้อความใหม่จากลูกค้า</div>
+          </div>
+        `;
+      }
+
+      const aiBox = document.getElementById('ai-suggestion-box');
+      if (aiBox) aiBox.innerText = 'เลือกการสนทนาเพื่อให้ AI วิเคราะห์และแนะนำคำตอบ';
+    }
+
+    function selectConversation(id, elem) {
+      if (!elem) {
+        elem = document.querySelector(`.conv-item[data-conv-id="${id}"]`);
+      }
+      document.querySelectorAll('.conv-item').forEach(i => i.classList.remove('active'));
+      if (elem) {
+        elem.classList.add('active');
+        currentItemElem = elem;
+      }
       activeConvId = id;
 
       const data = CONV_DATA[id];
       if (!data) return;
 
       document.getElementById('active-chat-title').innerText = data.name;
-      document.getElementById('active-chat-id').innerText = data.id;
+      const idBadge = document.getElementById('active-chat-id');
+      idBadge.innerText = data.id || '-';
+      idBadge.style.display = 'inline-block';
 
       // Update Channel Badge in Header
       const channelBadge = document.getElementById('active-chat-channel');
       const chatContainer = document.getElementById('chat-view-container');
       const channelSelect = document.getElementById('composer-channel-select');
       const btnSend = document.getElementById('btn-send-message');
+      const toggleBtn = document.getElementById('btn-toggle-status');
+
+      channelBadge.style.display = 'inline-block';
+      if (toggleBtn) toggleBtn.style.display = 'inline-block';
 
       if (data.channel === 'line') {
         channelBadge.className = 'badge-channel badge-line badge-solid';
         channelBadge.innerText = '● LINE OA';
         chatContainer.classList.remove('channel-email');
         chatContainer.classList.add('channel-line');
-        channelSelect.value = 'line';
-        btnSend.innerHTML = '<span>ส่งข้อความ LINE OA</span>';
+        if (channelSelect) channelSelect.value = 'line';
+        if (btnSend) btnSend.innerHTML = '<span>ส่งข้อความ LINE OA</span>';
       } else {
         channelBadge.className = 'badge-channel badge-email badge-solid';
         channelBadge.innerText = '✉ GMAIL';
         chatContainer.classList.remove('channel-line');
         chatContainer.classList.add('channel-email');
-        channelSelect.value = 'email';
-        btnSend.innerHTML = '<span>ส่งอีเมลตอบกลับ (Gmail)</span>';
+        if (channelSelect) channelSelect.value = 'email';
+        if (btnSend) btnSend.innerHTML = '<span>ส่งอีเมลตอบกลับ (Gmail)</span>';
       }
 
       // Update SQLite Info in Copilot
       const infoValues = document.querySelectorAll('.sidebar-copilot .info-value');
       if (infoValues.length >= 4) {
-        infoValues[0].innerText = data.lead;
-        infoValues[1].innerText = data.userCount;
-        infoValues[2].innerText = data.sync;
-        infoValues[3].innerText = data.history;
+        infoValues[0].innerText = data.lead || '-';
+        infoValues[1].innerText = data.userCount || '-';
+        infoValues[2].innerText = data.sync || 'SQLite Database';
+        infoValues[3].innerText = data.history || `${(data.messages || []).length} รายการ`;
       }
 
       // Update AI Suggestion
-      document.getElementById('ai-suggestion-box').innerText = data.aiSuggestion;
+      const aiBox = document.getElementById('ai-suggestion-box');
+      if (aiBox) aiBox.innerText = data.aiSuggestion || 'กำลังเตรียมคำตอบ...';
 
       // Update Messages Stream
       renderMessages(data);
 
       updateStatusUI(data.status);
+    }
+
+    /* ===== Context Menu Logic (Right Click to Delete / Change Status) ===== */
+    function handleConvContextMenu(e, convId) {
+      e.preventDefault();
+      e.stopPropagation();
+      contextMenuTargetId = convId;
+      const menu = document.getElementById('custom-context-menu');
+      if (!menu) return;
+
+      const item = CONV_DATA[convId];
+      if (item) {
+        const isClosed = item.status === 'closed';
+        const stText = document.getElementById('ctx-status-text');
+        const stIcon = document.getElementById('ctx-status-icon');
+        if (stText) stText.innerText = isClosed ? 'เปิดการสนทนาใหม่' : 'ปิดเคสการสนทนานี้';
+        if (stIcon) stIcon.innerText = isClosed ? '↺' : '✓';
+      }
+
+      menu.style.display = 'block';
+      let x = e.clientX;
+      let y = e.clientY;
+      const menuWidth = 190;
+      const menuHeight = 90;
+      if (x + menuWidth > window.innerWidth) x = window.innerWidth - menuWidth - 10;
+      if (y + menuHeight > window.innerHeight) y = window.innerHeight - menuHeight - 10;
+
+      menu.style.left = `${x}px`;
+      menu.style.top = `${y}px`;
+    }
+
+    function hideContextMenu() {
+      const menu = document.getElementById('custom-context-menu');
+      if (menu) menu.style.display = 'none';
+    }
+
+    document.addEventListener('click', () => {
+      hideContextMenu();
+    });
+
+    function toggleStatusFromContextMenu() {
+      hideContextMenu();
+      if (!contextMenuTargetId) return;
+      const conv = CONV_DATA[contextMenuTargetId];
+      if (!conv) return;
+
+      const next = conv.status === 'closed' ? 'pending' : 'closed';
+      conv.status = next;
+
+      // Update list element
+      const elem = document.querySelector(`.conv-item[data-conv-id="${contextMenuTargetId}"]`);
+      if (elem) {
+        elem.setAttribute('data-status', next);
+        const pill = elem.querySelector('.status-pill');
+        if (pill) {
+          if (next === 'closed') {
+            pill.className = 'status-pill status-closed';
+            pill.innerText = 'ปิดเคส';
+          } else {
+            pill.className = 'status-pill status-pending';
+            pill.innerText = 'รอตอบ';
+          }
+        }
+      }
+
+      if (contextMenuTargetId === activeConvId) {
+        updateStatusUI(next);
+      }
+      filterConversations();
+      showToast('เปลี่ยนสถานะเรียบร้อย', next === 'closed' ? 'ปิดเคสแล้ว' : 'เปิดเคสใหม่แล้ว', '✓');
+    }
+
+    async function confirmDeleteTargetConv() {
+      hideContextMenu();
+      const targetId = contextMenuTargetId;
+      if (!targetId) return;
+
+      const item = CONV_DATA[targetId];
+      const targetName = item ? item.name : 'การสนทนานี้';
+      
+      if (!confirm(`คุณต้องการลบแชทของ "${targetName}" ออกจากระบบถาวรใช่หรือไม่?`)) {
+        return;
+      }
+
+      try {
+        const idToDelete = item ? (item.id || targetId) : targetId;
+        const channel = item ? (item.channel || 'line') : 'line';
+
+        const res = await fetch('/api/inbox/conversation', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: idToDelete, channel: channel })
+        });
+        const data = await res.json();
+
+        delete CONV_DATA[targetId];
+        renderConversationsList();
+
+        if (activeConvId === targetId) {
+          const remainingKeys = Object.keys(CONV_DATA);
+          if (remainingKeys.length > 0) {
+            selectConversation(remainingKeys[0]);
+          } else {
+            clearActiveChat();
+          }
+        }
+
+        playSound('pop');
+        showToast('ลบการสนทนาสำเร็จ', `ลบข้อมูล "${targetName}" เรียบร้อย`, '🗑️');
+      } catch (err) {
+        console.error('Delete error:', err);
+        showToast('เกิดข้อผิดพลาดในการลบ', err.message, '❌');
+      }
     }
 
     function onChannelSelectChange(val) {
@@ -2627,8 +2705,21 @@
     function renderConversationsList() {
       const container = document.getElementById('conv-list-container');
       if (!container) return;
-      let html = '';
       const keys = Object.keys(CONV_DATA);
+
+      if (keys.length === 0) {
+        container.innerHTML = `
+          <div id="conv-empty-state" style="padding: 32px 16px; text-align: center; color: var(--muted); font-size: var(--text-xs);">
+            <div style="font-size: 28px; margin-bottom: 8px;">💬</div>
+            <div>ยังไม่มีการสนทนาในระบบ</div>
+            <div style="margin-top: 4px; font-size: 11px; opacity: 0.7;">เมื่อมีข้อความ LINE หรืออีเมลเข้ามา จะปรากฏที่นี่</div>
+          </div>
+        `;
+        clearActiveChat();
+        return;
+      }
+
+      let html = '';
       keys.forEach((key, idx) => {
         const item = CONV_DATA[key];
         const isAct = (key === activeConvId) ? 'active' : '';
@@ -2640,7 +2731,7 @@
         const timeStr = item.messages && item.messages.length > 0 ? (item.messages[item.messages.length - 1].time || '').split('·')[0].trim() : 'ล่าสุด';
 
         html += `
-          <div class="conv-item ${isAct}" data-od-id="conv-item-${idx+1}" data-conv-id="${key}" data-channel="${item.channel}" data-status="${item.status}" onclick="selectConversation('${key}', this)">
+          <div class="conv-item ${isAct}" data-od-id="conv-item-${idx+1}" data-conv-id="${key}" data-channel="${item.channel}" data-status="${item.status}" onclick="selectConversation('${key}', this)" oncontextmenu="handleConvContextMenu(event, '${key}')" title="คลิกซ้ายเพื่อเปิดแชท / คลิกขวาเพื่อลบหรือเปลี่ยนสถานะ">
             <div class="avatar">
               ${initial}
               <span class="avatar-channel-pip ${pipClass}"></span>
@@ -2771,9 +2862,31 @@
       }
     }
 
-    // Initial render for active conversation
-    if (CONV_DATA['conv-1']) {
-      renderMessages(CONV_DATA['conv-1']);
+    async function clearAllTestChats() {
+      if (!confirm('คุณต้องการลบข้อความทดสอบและแชททั้งหมดในฐานข้อมูล SQLite หรือไม่?\n(การกระทำนี้จะล้างประวัติแชททั้งหมดเพื่อให้ระบบสะอาดพร้อมใช้งานจริง)')) {
+        return;
+      }
+      try {
+        const res = await fetch('/api/inbox/clear-all', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Clear local data
+          for (const k of Object.keys(CONV_DATA)) {
+            delete CONV_DATA[k];
+          }
+          renderConversationsList();
+          clearActiveChat();
+          playSound('pop');
+          showToast('ล้างข้อมูลสำเร็จ', 'ลบประวัติการแชททั้งหมดในฐานข้อมูล SQLite เรียบร้อย', '🧹');
+        } else {
+          showToast('ผิดพลาด', data.message || 'ไม่สามารถลบข้อมูลได้', '❌');
+        }
+      } catch (err) {
+        showToast('ผิดพลาด', err.message, '❌');
+      }
     }
 
     // Fetch real chats from SQLite DB immediately
@@ -3119,6 +3232,10 @@
               </div>
               <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
                 <button class="admin-btn" onclick="fetchRealConversations(); showToast('รีเฟรชข้อมูล', 'ดึงข้อความล่าสุดจากฐานข้อมูล SQLite เรียบร้อย', '🔄');">🔄 ซิงก์ข้อความจริงจาก SQLite อีกครั้ง</button>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);">
+                <button class="admin-btn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);" onclick="clearAllTestChats()">🗑️ ล้างประวัติแชททดสอบทั้งหมด (Clear All Chats)</button>
+                <span style="font-size: var(--text-xs); color: #ef4444;">ลบประวัติการสนทนาทั้งหมดใน SQLite</span>
               </div>
             </div>
           </div>
