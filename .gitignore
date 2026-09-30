@@ -7,11 +7,22 @@ package-lock.json
 cloudflared.exe
 
 # Database & Sensitive runtime configs
-# (database.json มี API keys และ Access Tokens จริง)
+# (aizen.db มีบัญชีผู้ใช้, hash รหัสผ่าน และ API keys จริง)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db-journal
 data/database.json
+data/database.json.migrated.json
+data/preview-database.json
+data/BACKUP-database.json
 .env
 *.env
 *.local
+
+# Next.js build output
+.next/
+out/
 
 # Logs & temp files
 *.log

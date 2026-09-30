@@ -1,0 +1,2421 @@
+<!doctype html>
+<html lang="th" data-theme="compact-modern">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AIZEN Inbox · ระบบรวมศูนย์สนทนาหลายช่องทาง</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Variables & Themes */
+    :root {
+      /* Dynamic Font Scale for Accessibility & Senior Friendly */
+      --font-scale: 1;
+
+      /* Shared Tokens */
+      --font-th: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-en: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      
+      --radius-xs: 4px;
+      --radius-sm: 6px;
+      --radius: 8px;
+      --radius-lg: 12px;
+
+      --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+      --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+
+      /* Channel Brand Colors: LINE Green & Email Red/Blue */
+      --line-green: #06c755;
+      --line-green-hover: #05b44c;
+      --line-green-soft: #eafaf1;
+      --line-green-border: #a7f3d0;
+      --line-green-fg: #047835;
+
+      --email-red: #ea4335;
+      --email-red-hover: #d93025;
+      --email-red-soft: #fef2f2;
+      --email-red-border: #fecaca;
+      --email-red-fg: #c5221f;
+      --email-blue: #1a73e8;
+      --email-blue-soft: #e8f0fe;
+    }
+
+    /* Accessibility Text Scaling */
+    html[data-font-size="sm"] { --font-scale: 0.88; }
+    html[data-font-size="md"] { --font-scale: 1; }
+    html[data-font-size="lg"] { --font-scale: 1.15; }
+    html[data-font-size="xl"] { --font-scale: 1.30; }
+
+    html[data-font-size="lg"] .workspace {
+      grid-template-columns: 320px 1fr 340px;
+    }
+    html[data-font-size="xl"] .workspace {
+      grid-template-columns: 350px 1fr 370px;
+    }
+    html[data-font-size="xl"] .msg-bubble {
+      padding: 10px 14px;
+    }
+    html[data-font-size="xl"] .conv-item {
+      padding: 11px 13px;
+    }
+
+    /* Style 1: Compact Modern (Default - Balanced, Crisp, Pro SaaS) */
+    html[data-theme="compact-modern"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --fg: #0f172a;
+      --fg-secondary: #334155;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --border-focus: #0284c7;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-soft: #e0f2fe;
+      --accent-fg: #0369a1;
+
+      /* Typography Scale - Compact & Refined */
+      --text-2xs: calc(10px * var(--font-scale));
+      --text-xs: calc(11px * var(--font-scale));
+      --text-sm: calc(12px * var(--font-scale));
+      --text-base: calc(13px * var(--font-scale));
+      --text-md: calc(14px * var(--font-scale));
+      --text-lg: calc(15px * var(--font-scale));
+      --line-height-tight: 1.35;
+      --line-height-normal: 1.45;
+    }
+
+    /* Style 2: Dense Professional (Datadog / GitHub / Linear High Density) */
+    html[data-theme="dense-linear"] {
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --surface-subtle: #f9fafb;
+      --fg: #111827;
+      --fg-secondary: #374151;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --border-focus: #2563eb;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: #eff6ff;
+      --accent-fg: #1d4ed8;
+
+      /* Ultra tight & data-dense */
+      --text-2xs: calc(9.5px * var(--font-scale));
+      --text-xs: calc(10.5px * var(--font-scale));
+      --text-sm: calc(11.5px * var(--font-scale));
+      --text-base: calc(12px * var(--font-scale));
+      --text-md: calc(13px * var(--font-scale));
+      --text-lg: calc(14px * var(--font-scale));
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.38;
+    }
+
+    /* Style 3: Minimal Monocle / Clean Slate (Soft, Elegant, High Readability) */
+    html[data-theme="clean-slate"] {
+      --bg: #fafaf9;
+      --surface: #ffffff;
+      --surface-subtle: #f5f5f4;
+      --fg: #1c1917;
+      --fg-secondary: #44403c;
+      --muted: #78716c;
+      --border: #e7e5e4;
+      --border-focus: #0d9488;
+      --accent: #0f766e;
+      --accent-hover: #115e59;
+      --accent-soft: #ccfbf1;
+      --accent-fg: #0f766e;
+
+      --text-2xs: calc(10px * var(--font-scale));
+      --text-xs: calc(11.5px * var(--font-scale));
+      --text-sm: calc(12.5px * var(--font-scale));
+      --text-base: calc(13.5px * var(--font-scale));
+      --text-md: calc(14.5px * var(--font-scale));
+      --text-lg: calc(16px * var(--font-scale));
+      --line-height-tight: 1.4;
+      --line-height-normal: 1.55;
+    }
+
+    /* Style 4: Dark Studio (Pro Dark Mode) */
+    html[data-theme="dark-studio"] {
+      --bg: #090d16;
+      --surface: #111726;
+      --surface-subtle: #182238;
+      --fg: #f1f5f9;
+      --fg-secondary: #cbd5e1;
+      --muted: #94a3b8;
+      --border: #1e293b;
+      --border-focus: #38bdf8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --accent-fg: #38bdf8;
+
+      --line-green-soft: rgba(6, 199, 85, 0.18);
+      --line-green-border: rgba(6, 199, 85, 0.35);
+      --line-green-fg: #4ade80;
+
+      --email-red-soft: rgba(234, 67, 53, 0.18);
+      --email-red-border: rgba(234, 67, 53, 0.35);
+      --email-red-fg: #f87171;
+
+      --text-2xs: calc(10px * var(--font-scale));
+      --text-xs: calc(11px * var(--font-scale));
+      --text-sm: calc(12px * var(--font-scale));
+      --text-base: calc(13px * var(--font-scale));
+      --text-md: calc(14px * var(--font-scale));
+      --text-lg: calc(15px * var(--font-scale));
+      --line-height-tight: 1.35;
+      --line-height-normal: 1.45;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-en), var(--font-th);
+      font-size: var(--text-base);
+      line-height: var(--line-height-normal);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    input, textarea, select { font: inherit; color: inherit; }
+
+    /* Top Bar */
+    .topbar {
+      height: 48px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .brand-group { display: flex; align-items: center; gap: 8px; }
+    .brand-logo {
+      width: 26px;
+      height: 26px;
+      background: var(--fg);
+      color: var(--surface);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: -0.05em;
+    }
+    .brand-title {
+      font-weight: 600;
+      font-size: var(--text-md);
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: var(--radius-xs);
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Style Switcher Bar */
+    /* Style Switcher Bar & Font Size Switcher Bar */
+    .theme-selector-bar, .font-size-selector-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-subtle);
+      padding: 2px 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .theme-label {
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding-left: 4px;
+      white-space: nowrap;
+    }
+    .theme-btn, .font-btn {
+      font-size: var(--text-xs);
+      padding: 3px 7px;
+      border-radius: var(--radius-xs);
+      color: var(--muted);
+      font-weight: 500;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .theme-btn:hover, .font-btn:hover { color: var(--fg); background: rgba(0, 0, 0, 0.03); }
+    .theme-btn.active, .font-btn.active {
+      background: var(--surface);
+      color: var(--fg);
+      font-weight: 600;
+      box-shadow: var(--shadow-subtle);
+    }
+    .font-btn.active {
+      color: var(--accent);
+      border: 1px solid var(--border);
+      font-weight: 700;
+    }
+    .font-btn-xl {
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .mode-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .dot-live {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Main Workspace Layout */
+    .workspace {
+      display: grid;
+      grid-template-columns: 300px 1fr 320px;
+      flex: 1;
+      min-height: 0;
+      background: var(--bg);
+    }
+
+    /* Col 1: Sidebar List */
+    .sidebar-list {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .filter-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 5px 6px;
+      gap: 3px;
+      background: var(--surface-subtle);
+      overflow-x: auto;
+    }
+    .filter-btn {
+      flex: 1;
+      min-width: fit-content;
+      padding: 4px 7px;
+      font-size: var(--text-xs);
+      border-radius: var(--radius-xs);
+      text-align: center;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all 0.12s ease;
+    }
+    .filter-btn:hover { background: var(--surface); color: var(--fg); }
+    .filter-btn.active {
+      background: var(--surface);
+      color: var(--fg);
+      font-weight: 600;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    /* Distinctive Brand Filter Accents */
+    .filter-btn[data-filter="line"] {
+      border: 1px solid transparent;
+    }
+    .filter-btn[data-filter="line"]:hover {
+      background: var(--line-green-soft);
+      color: var(--line-green-fg);
+      border-color: var(--line-green-border);
+    }
+    .filter-btn[data-filter="line"].active {
+      background: var(--line-green);
+      color: #ffffff;
+      border-color: var(--line-green-hover);
+      box-shadow: 0 1px 4px rgba(6, 199, 85, 0.35);
+    }
+
+    .filter-btn[data-filter="email"] {
+      border: 1px solid transparent;
+    }
+    .filter-btn[data-filter="email"]:hover {
+      background: var(--email-red-soft);
+      color: var(--email-red-fg);
+      border-color: var(--email-red-border);
+    }
+    .filter-btn[data-filter="email"].active {
+      background: var(--email-red);
+      color: #ffffff;
+      border-color: var(--email-red-hover);
+      box-shadow: 0 1px 4px rgba(234, 67, 53, 0.35);
+    }
+
+    .filter-btn[data-filter="pending"].active {
+      background: #ea580c;
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(234, 88, 12, 0.3);
+    }
+    .filter-btn[data-filter="closed"].active {
+      background: #475569;
+      color: #ffffff;
+    }
+
+    .search-box {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .search-input {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      background: var(--surface-subtle);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .search-input:focus {
+      border-color: var(--border-focus);
+      background: var(--surface);
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+
+    .conv-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+    .conv-item {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      gap: 9px;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+    }
+    .conv-item:hover {
+      background: var(--surface-subtle);
+      transform: translateX(3px);
+    }
+    .conv-item:active {
+      transform: scale(0.985);
+    }
+    .conv-item.active {
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+    }
+    .conv-item[data-channel="line"].active {
+      background: var(--line-green-soft);
+      border-left-color: var(--line-green);
+    }
+    .conv-item[data-channel="email"].active {
+      background: var(--email-red-soft);
+      border-left-color: var(--email-red);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: var(--text-xs);
+      flex-shrink: 0;
+      color: var(--fg-secondary);
+      position: relative;
+    }
+    .conv-item[data-channel="line"] .avatar {
+      background: var(--line-green-soft);
+      color: var(--line-green-fg);
+      border-color: var(--line-green-border);
+    }
+    .conv-item[data-channel="email"] .avatar {
+      background: var(--email-red-soft);
+      color: var(--email-red-fg);
+      border-color: var(--email-red-border);
+    }
+    .avatar-channel-pip {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--surface);
+    }
+    .pip-line { background: var(--line-green); }
+    .pip-email { background: var(--email-red); }
+
+    .conv-content { flex: 1; min-width: 0; }
+    .conv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+    .conv-name {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      color: var(--fg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .conv-time {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+      margin-left: 6px;
+    }
+    .conv-snippet {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: var(--line-height-tight);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .snippet-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Badges */
+    .badge-channel {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: var(--text-2xs);
+      font-family: var(--font-mono);
+      padding: 1px 5.5px;
+      border-radius: var(--radius-xs);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+    }
+    .badge-line {
+      background: var(--line-green-soft);
+      color: var(--line-green-fg);
+      border: 1px solid var(--line-green-border);
+    }
+    .badge-line.badge-solid {
+      background: var(--line-green);
+      color: #ffffff;
+      border: 1px solid var(--line-green-hover);
+      box-shadow: 0 1px 3px rgba(6, 199, 85, 0.3);
+    }
+    .badge-email {
+      background: var(--email-red-soft);
+      color: var(--email-red-fg);
+      border: 1px solid var(--email-red-border);
+    }
+    .badge-email.badge-solid {
+      background: var(--email-red);
+      color: #ffffff;
+      border: 1px solid var(--email-red-hover);
+      box-shadow: 0 1px 3px rgba(234, 67, 53, 0.3);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--text-2xs);
+      padding: 1px 5px;
+      border-radius: var(--radius-xs);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .status-pending {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+    .status-closed {
+      background: var(--surface-subtle);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* Col 2: Chat View */
+    .chat-view {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      min-height: 0;
+      border-right: 1px solid var(--border);
+    }
+    .chat-header {
+      height: 48px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .chat-user-meta { display: flex; align-items: center; gap: 8px; }
+    .chat-title-text {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      color: var(--fg);
+    }
+    .status-badge {
+      font-size: var(--text-2xs);
+      padding: 1.5px 6px;
+      border-radius: 999px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-action-ghost {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--fg-secondary);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      transition: all 0.12s ease;
+      cursor: pointer;
+    }
+    .btn-action-ghost:hover {
+      background: var(--surface);
+      border-color: var(--muted);
+      color: var(--fg);
+    }
+
+    .message-stream {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg-group {
+      display: flex;
+      flex-direction: column;
+      max-width: 68%;
+    }
+    .msg-group.inbound { align-self: flex-start; }
+    .msg-group.outbound { align-self: flex-end; align-items: flex-end; }
+
+    .msg-bubble {
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-size: var(--text-sm);
+      line-height: var(--line-height-normal);
+      word-break: break-word;
+    }
+    .inbound .msg-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      border-bottom-left-radius: 2px;
+      box-shadow: var(--shadow-subtle);
+    }
+    .outbound .msg-bubble {
+      background: var(--accent);
+      color: #ffffff;
+      border-bottom-right-radius: 2px;
+    }
+    .msg-meta {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+      margin-top: 3px;
+      font-family: var(--font-mono);
+      display: flex;
+      gap: 6px;
+    }
+
+    /* Composer Area */
+    .composer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .composer-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .quick-templates {
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+    }
+    .chip {
+      font-size: var(--text-xs);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: var(--radius-xs);
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.12s ease;
+    }
+    .chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface);
+    }
+    .channel-select {
+      font-size: var(--text-xs);
+      padding: 3px 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface-subtle);
+      outline: none;
+      color: var(--fg);
+    }
+
+    .composer-input {
+      width: 100%;
+      height: 60px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 9px;
+      resize: none;
+      outline: none;
+      font-size: var(--text-sm);
+      background: var(--surface-subtle);
+      line-height: var(--line-height-normal);
+      transition: all 0.15s ease;
+    }
+    .composer-input:focus {
+      border-color: var(--border-focus);
+      background: var(--surface);
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+
+    .composer-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .composer-hint {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+    }
+    .btn-send {
+      background: var(--accent);
+      color: #ffffff;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+    }
+    .btn-send:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    .btn-send:active {
+      transform: translateY(1px) scale(0.97);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Dynamic Channel Colors for Active Chat */
+    .chat-view.channel-line .outbound .msg-bubble {
+      background: var(--line-green);
+      color: #ffffff;
+    }
+    .chat-view.channel-line .btn-send {
+      background: var(--line-green);
+    }
+    .chat-view.channel-line .btn-send:hover {
+      background: var(--line-green-hover);
+    }
+    .chat-view.channel-line .composer-input:focus {
+      border-color: var(--line-green);
+      box-shadow: 0 0 0 2px var(--line-green-soft);
+    }
+    .chat-view.channel-line .chip:hover {
+      border-color: var(--line-green);
+      color: var(--line-green-fg);
+    }
+
+    .chat-view.channel-email .outbound .msg-bubble {
+      background: var(--email-red);
+      color: #ffffff;
+    }
+    .chat-view.channel-email .btn-send {
+      background: var(--email-red);
+    }
+    .chat-view.channel-email .btn-send:hover {
+      background: var(--email-red-hover);
+    }
+    .chat-view.channel-email .composer-input:focus {
+      border-color: var(--email-red);
+      box-shadow: 0 0 0 2px var(--email-red-soft);
+    }
+    .chat-view.channel-email .chip:hover {
+      border-color: var(--email-red);
+      color: var(--email-red-fg);
+    }
+
+    /* Email Thread Header Banner inside chat stream */
+    .email-thread-card {
+      background: var(--surface);
+      border: 1px solid var(--email-red-border);
+      border-left: 3px solid var(--email-red);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow-subtle);
+    }
+    .email-subject-line {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+    .email-meta-info {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .badge-gemini {
+      background: linear-gradient(135deg, #7c3aed 0%, #2563eb 50%, #06b6d4 100%);
+      color: #ffffff !important;
+      border: none !important;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+    }
+
+    /* Col 3: AI Copilot */
+    .sidebar-copilot {
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .copilot-header {
+      height: 48px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .copilot-title {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--fg);
+    }
+    .copilot-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .copilot-card {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 11px;
+    }
+    .card-label {
+      font-size: var(--text-2xs);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-fg);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .suggestion-text {
+      font-size: var(--text-xs);
+      line-height: var(--line-height-normal);
+      color: var(--fg-secondary);
+      margin-bottom: 8px;
+    }
+    .btn-apply {
+      background: var(--accent);
+      color: #ffffff;
+      font-size: var(--text-xs);
+      padding: 4px 8px;
+      border-radius: var(--radius-xs);
+      font-weight: 500;
+      width: 100%;
+      text-align: center;
+      transition: background 0.12s ease;
+    }
+    .btn-apply:hover { background: var(--accent-hover); }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--text-xs);
+      padding: 3.5px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--muted); }
+    .info-value { font-weight: 500; font-family: var(--font-mono); color: var(--fg); font-size: var(--text-xs); }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .switch-ui {
+      width: 28px;
+      height: 16px;
+      background: #10b981;
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .switch-knob {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+      transition: all 0.15s ease;
+    }
+
+    /* Style comparison preview drawer/tooltip */
+    .style-hint-pill {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+    }
+
+    /* ===== Interactive Effects & Micro-Interactions ===== */
+
+    /* Pulse effect on live indicator pips */
+    @keyframes pulsePipLine {
+      0% { box-shadow: 0 0 0 0 rgba(6, 199, 85, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(6, 199, 85, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(6, 199, 85, 0); }
+    }
+    @keyframes pulsePipEmail {
+      0% { box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(234, 67, 53, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(234, 67, 53, 0); }
+    }
+    .pip-line { animation: pulsePipLine 2.4s infinite cubic-bezier(0.24, 0, 0.38, 1); }
+    .pip-email { animation: pulsePipEmail 2.4s infinite cubic-bezier(0.24, 0, 0.38, 1); }
+
+    /* Conversation thread switch transition */
+    @keyframes chatFadeSlide {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .chat-messages.anim-switch {
+      animation: chatFadeSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Message entrance animations with directional physics */
+    @keyframes msgPopInbound {
+      0% { opacity: 0; transform: translate3d(-12px, 6px, 0) scale(0.96); }
+      70% { transform: translate3d(2px, -1px, 0) scale(1.01); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+    @keyframes msgPopOutbound {
+      0% { opacity: 0; transform: translate3d(12px, 6px, 0) scale(0.96); }
+      70% { transform: translate3d(-2px, -1px, 0) scale(1.01); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+    .msg-group {
+      position: relative;
+    }
+    .msg-group.inbound {
+      animation: msgPopInbound 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .msg-group.outbound {
+      animation: msgPopOutbound 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Email thread card slide-down */
+    @keyframes emailCardSlide {
+      0% { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .email-thread-card {
+      animation: emailCardSlide 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Message Bubble Wrapper with Hover Reaction Dock */
+    .msg-bubble-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      transition: transform 0.15s ease;
+    }
+    .msg-bubble-wrapper:hover {
+      transform: translateY(-1px);
+    }
+    .reaction-bar {
+      position: absolute;
+      top: -24px;
+      display: none;
+      align-items: center;
+      gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 6px;
+      box-shadow: var(--shadow-md);
+      z-index: 15;
+      animation: msgPopInbound 0.15s ease-out;
+    }
+    .inbound .reaction-bar { left: 0; }
+    .outbound .reaction-bar { right: 0; }
+    .msg-bubble-wrapper:hover .reaction-bar {
+      display: flex;
+    }
+    .reaction-btn {
+      font-size: 13px;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: none;
+      border: none;
+    }
+    .reaction-btn:hover {
+      transform: scale(1.4) translateY(-2px);
+    }
+    .reaction-btn:active {
+      transform: scale(0.95);
+    }
+    .reaction-copy-btn {
+      font-size: 11px;
+      color: var(--muted);
+      padding: 2px 5px;
+      border-left: 1px solid var(--border);
+      margin-left: 2px;
+      cursor: pointer;
+      background: none;
+      border-top: none;
+      border-bottom: none;
+      border-right: none;
+      transition: all 0.15s ease;
+    }
+    .reaction-copy-btn:hover {
+      color: var(--fg);
+      transform: scale(1.05);
+    }
+
+    /* Floating Emoji Particle Effect */
+    @keyframes floatEmoji {
+      0% { opacity: 1; transform: translate3d(0, 0, 0) scale(0.8); }
+      40% { opacity: 1; transform: translate3d(0, -20px, 0) scale(1.4) rotate(-6deg); }
+      100% { opacity: 0; transform: translate3d(0, -42px, 0) scale(1.1) rotate(10deg); }
+    }
+    .floating-emoji {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      font-size: 20px;
+      animation: floatEmoji 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Reaction Badges on bottom of bubble */
+    .bubble-reactions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-top: 3px;
+    }
+    .reaction-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-subtle);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reaction-badge:hover {
+      background: var(--surface-subtle);
+      transform: scale(1.08);
+    }
+    .reaction-badge:active {
+      transform: scale(0.92);
+    }
+    .reaction-badge.pop-anim {
+      animation: popReaction 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popReaction {
+      0% { transform: scale(0.6); opacity: 0; }
+      70% { transform: scale(1.18); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Channel Badge Pop */
+    @keyframes badgePop {
+      0% { transform: scale(0.85); opacity: 0.7; }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .badge-pop {
+      animation: badgePop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Typing Indicator */
+    .typing-indicator-container {
+      display: none;
+      align-self: flex-start;
+      margin-bottom: 4px;
+      animation: msgPopInbound 0.22s ease-out;
+    }
+    .typing-indicator-bubble {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      border-bottom-left-radius: 2px;
+      box-shadow: var(--shadow-subtle);
+    }
+    .typing-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: typingWave 1.3s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingWave {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+    .typing-label {
+      font-size: var(--text-2xs);
+      color: var(--muted);
+      margin-top: 3px;
+      font-family: var(--font-mono);
+    }
+
+    /* AI Copilot Shimmer Loading Effect */
+    @keyframes shimmerAnim {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer-loading {
+      position: relative;
+      overflow: hidden;
+      color: transparent !important;
+      background: linear-gradient(90deg, var(--surface-subtle) 25%, var(--border) 50%, var(--surface-subtle) 75%) !important;
+      background-size: 200% 100% !important;
+      animation: shimmerAnim 1.3s infinite !important;
+      border-radius: var(--radius-xs);
+    }
+
+    /* AI Copilot Card Breathing Ambient Glow */
+    @keyframes copilotGlow {
+      0%, 100% { border-color: var(--border); }
+      50% { border-color: var(--accent); box-shadow: 0 0 10px 1px var(--accent-soft); }
+    }
+    .copilot-card.smart-card {
+      animation: copilotGlow 4s infinite ease-in-out;
+    }
+
+    /* AI Tone Chips */
+    .tone-chips {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 7px;
+      flex-wrap: wrap;
+    }
+    .tone-chip {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: var(--font-th);
+    }
+    .tone-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .tone-chip:active {
+      transform: scale(0.94);
+    }
+    .tone-chip.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-fg);
+      font-weight: 600;
+      transform: scale(1.02);
+    }
+
+    /* Regenerate Button Spinning Icon */
+    .btn-regenerate {
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-xs);
+      color: var(--muted);
+      font-size: var(--text-2xs);
+      padding: 3px 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      margin-top: 5px;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn-regenerate:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface);
+      transform: translateY(-1px);
+    }
+    .btn-regenerate:active {
+      transform: scale(0.97);
+    }
+    @keyframes spinContinuously {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .btn-regenerate.spinning .regen-icon {
+      display: inline-block;
+      animation: spinContinuously 0.55s linear infinite;
+    }
+
+    /* Textarea Highlight Pulse when AI or Template applied */
+    @keyframes flashPulse {
+      0% { box-shadow: 0 0 0 3px rgba(6, 199, 85, 0.55); border-color: var(--line-green); }
+      100% { box-shadow: 0 0 0 0 rgba(6, 199, 85, 0); }
+    }
+    .composer-input.flash-pulse {
+      animation: flashPulse 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99999;
+    }
+
+    /* Status Button Celebrate Bounce */
+    @keyframes celebrateBounce {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.15) rotate(-3deg); }
+      60% { transform: scale(0.95) rotate(2deg); }
+      100% { transform: scale(1); }
+    }
+    .btn-status.celebrate {
+      animation: celebrateBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Toast Notifications with Bouncy Physics */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-item {
+      pointer-events: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      min-width: 250px;
+      max-width: 340px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: var(--text-xs);
+      color: var(--fg);
+      animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease;
+    }
+    .toast-item:hover {
+      transform: translateY(-2px);
+    }
+    @keyframes toastIn {
+      from { transform: translateX(50px) scale(0.9); opacity: 0; }
+      to { transform: translateX(0) scale(1); opacity: 1; }
+    }
+    .toast-item.hide {
+      animation: toastOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes toastOut {
+      to { transform: translateX(50px) scale(0.9); opacity: 0; }
+    }
+    .toast-icon { font-size: 15px; flex-shrink: 0; }
+    .toast-content { flex: 1; }
+    .toast-title { font-weight: 600; margin-bottom: 1px; }
+    .toast-desc { font-size: var(--text-2xs); color: var(--muted); }
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: var(--accent);
+      width: 100%;
+      animation: toastProgress 2.8s linear forwards;
+    }
+    @keyframes toastProgress {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
+    /* Action Buttons in Topbar */
+    .topbar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .topbar-btn:hover {
+      background: var(--surface);
+      border-color: var(--muted);
+      color: var(--fg);
+      transform: translateY(-1px);
+    }
+    .topbar-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Inbound Simulator Button Pulse */
+    @keyframes attentionPulse {
+      0%, 88%, 100% { transform: scale(1); box-shadow: none; }
+      92% { transform: scale(1.04) rotate(-1deg); box-shadow: 0 0 8px rgba(2, 132, 199, 0.4); }
+      96% { transform: scale(1.04) rotate(1deg); box-shadow: 0 0 8px rgba(2, 132, 199, 0.4); }
+    }
+    .btn-simulate {
+      background: var(--accent-soft);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+      font-weight: 600;
+      animation: attentionPulse 5s infinite ease-in-out;
+    }
+    .btn-simulate:hover {
+      animation: none;
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar" data-od-id="topbar">
+    <div class="brand-group">
+      <div class="brand-logo">AZ</div>
+      <div class="brand-title">AIZEN กล่องข้อความรวมศูนย์</div>
+      <span class="brand-badge">v2.0 · SQLite</span>
+    </div>
+
+    <!-- Live Theme / Design Variant Switcher -->
+    <div class="theme-selector-bar" data-od-id="theme-switcher">
+      <span class="theme-label">ดีไซน์:</span>
+      <button class="theme-btn active" onclick="switchTheme('compact-modern', this)" title="แบบที่ 1: Compact Modern (กระชับ สมดุล มาตรฐาน SaaS)">Compact</button>
+      <button class="theme-btn" onclick="switchTheme('dense-linear', this)" title="แบบที่ 2: Dense Linear (ตัวหนังสือเล็กกระชับ สไตล์ Linear/DevOps เจาะจงความจุข้อมูล)">Dense</button>
+      <button class="theme-btn" onclick="switchTheme('clean-slate', this)" title="แบบที่ 3: Clean Slate (มินิมอล นุ่มนวล โทนสีธรรมชาติ อ่านสบายตา)">Clean</button>
+      <button class="theme-btn" onclick="switchTheme('dark-studio', this)" title="แบบที่ 4: Dark Studio (ธีมมืดมืออาชีพ ถนอมสายตา)">Dark</button>
+    </div>
+
+    <!-- Font Size Switcher (Accessibility & Senior Friendly) -->
+    <div class="font-size-selector-bar" data-od-id="font-size-switcher">
+      <span class="theme-label">ขนาดอักษร:</span>
+      <button class="font-btn" data-size="sm" onclick="setFontSize('sm', this)" title="ขนาดเล็ก (88%)">A- เล็ก</button>
+      <button class="font-btn active" data-size="md" onclick="setFontSize('md', this)" title="ขนาดปกติ (100%)">A ปกติ</button>
+      <button class="font-btn" data-size="lg" onclick="setFontSize('lg', this)" title="ขนาดใหญ่ (115% อ่านสบายตา)">A+ ใหญ่</button>
+      <button class="font-btn font-btn-xl" data-size="xl" onclick="setFontSize('xl', this)" title="ขนาดใหญ่พิเศษ (130% ชัดเจน เหมาะสำหรับผู้สูงอายุ)">A++ ใหญ่พิเศษ</button>
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn btn-simulate" onclick="simulateInbound()" title="จำลองข้อความลูกค้าทักเข้ามาในระบบ">💬 จำลองข้อความเข้า</button>
+      <div class="mode-pill">
+        <span class="dot-live"></span>
+        <span>LINE & Gmail ซิงก์ปกติ</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <main class="workspace" id="content">
+
+    <!-- Column 1: Conversations List -->
+    <aside class="sidebar-list" data-od-id="sidebar-conversations">
+      <div class="filter-tabs" data-od-id="inbox-filter-tabs">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">ทั้งหมด (12)</button>
+        <button class="filter-btn" data-filter="pending" onclick="setFilter('pending', this)">รอเจ้าหน้าที่ (3)</button>
+        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed', this)">ปิดเคส (5)</button>
+        <button class="filter-btn" data-filter="line" onclick="setFilter('line', this)">LINE OA</button>
+        <button class="filter-btn" data-filter="email" onclick="setFilter('email', this)">อีเมล</button>
+      </div>
+
+      <div class="search-box">
+        <input type="text" class="search-input" id="search-input" oninput="filterConversations()" placeholder="ค้นหาชื่อลูกค้า, ข้อความ, เบอร์โทร..." />
+      </div>
+
+      <div class="conv-list" id="conv-list-container">
+        <!-- Item 1 (Active) -->
+        <div class="conv-item active" data-od-id="conv-item-1" data-conv-id="conv-1" data-channel="line" data-status="pending" onclick="selectConversation('conv-1', this)">
+          <div class="avatar">
+            สม
+            <span class="avatar-channel-pip pip-line" title="LINE OA"></span>
+          </div>
+          <div class="conv-content">
+            <div class="conv-header">
+              <span class="conv-name">คุณสมชาย พาณิชย์</span>
+              <span class="conv-time">10:42</span>
+            </div>
+            <div class="conv-snippet">
+              <span class="badge-channel badge-line">● LINE</span>
+              <span class="status-pill status-pending">รอตอบ</span>
+              <span class="snippet-text">สนใจสอบถามแพ็กเกจ Enterprise มีรอบอบรมวันไหนบ้างครับ?</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="conv-item" data-od-id="conv-item-2" data-conv-id="conv-2" data-channel="email" data-status="pending" onclick="selectConversation('conv-2', this)">
+          <div class="avatar">
+            พั
+            <span class="avatar-channel-pip pip-email" title="Gmail"></span>
+          </div>
+          <div class="conv-content">
+            <div class="conv-header">
+              <span class="conv-name">พัชราพร คลินิกเวชกรรม</span>
+              <span class="conv-time">10:15</span>
+            </div>
+            <div class="conv-snippet">
+              <span class="badge-channel badge-email">✉ GMAIL</span>
+              <span class="status-pill status-pending">รอตอบ</span>
+              <span class="snippet-text">ขอใบเสนอราคาต่ออายุสมาชิกรายปี สำหรับ 5 สาขา</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="conv-item" data-od-id="conv-item-3" data-conv-id="conv-3" data-channel="line" data-status="pending" onclick="selectConversation('conv-3', this)">
+          <div class="avatar">
+            กิต
+            <span class="avatar-channel-pip pip-line" title="LINE OA"></span>
+          </div>
+          <div class="conv-content">
+            <div class="conv-header">
+              <span class="conv-name">กิตติศักดิ์ โลจิสติกส์</span>
+              <span class="conv-time">09:50</span>
+            </div>
+            <div class="conv-snippet">
+              <span class="badge-channel badge-line">● LINE</span>
+              <span class="status-pill status-pending">รอตอบ</span>
+              <span class="snippet-text">แนบสลิปโอนเงินให้ในแชทแล้วครับ รบกวนช่วยตรวจสอบยอด</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="conv-item" data-od-id="conv-item-4" data-conv-id="conv-4" data-channel="email" data-status="closed" onclick="selectConversation('conv-4', this)">
+          <div class="avatar">
+            SC
+            <span class="avatar-channel-pip pip-email" title="Gmail"></span>
+          </div>
+          <div class="conv-content">
+            <div class="conv-header">
+              <span class="conv-name">บจก. สยามคอมเมิร์ซ</span>
+              <span class="conv-time">เมื่อวาน</span>
+            </div>
+            <div class="conv-snippet">
+              <span class="badge-channel badge-email">✉ GMAIL</span>
+              <span class="status-pill status-closed">ปิดการสนทนา</span>
+              <span class="snippet-text">ยืนยันการรับส่ง Webhook กับระบบคลังสินค้าเสร็จสมบูรณ์</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="conv-item" data-od-id="conv-item-5" data-conv-id="conv-5" data-channel="line" data-status="closed" onclick="selectConversation('conv-5', this)">
+          <div class="avatar">
+            ธี
+            <span class="avatar-channel-pip pip-line" title="LINE OA"></span>
+          </div>
+          <div class="conv-content">
+            <div class="conv-header">
+              <span class="conv-name">คุณธีรเดช เครื่องดื่มสากล</span>
+              <span class="conv-time">เมื่อวาน</span>
+            </div>
+            <div class="conv-snippet">
+              <span class="badge-channel badge-line">● LINE</span>
+              <span class="status-pill status-closed">ปิดการสนทนา</span>
+              <span class="snippet-text">ได้รับกุญแจ API พร้อมคู่มือแนะนำเรียบร้อยแล้ว ขอบคุณครับ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Column 2: Active Chat View -->
+    <section class="chat-view channel-line" id="chat-view-container" data-od-id="chat-main">
+      <div class="chat-header">
+        <div class="chat-user-meta">
+          <span class="chat-title-text" id="active-chat-title">คุณสมชาย พาณิชย์</span>
+          <span class="badge-channel badge-line badge-solid" id="active-chat-channel">● LINE OA</span>
+          <span class="status-badge" id="active-chat-status" style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;">• รอเจ้าหน้าที่ตอบ</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="style-hint-pill" id="active-chat-id">U48a1290f...</span>
+          <button class="btn-action-ghost" id="btn-toggle-status" onclick="toggleCaseStatus()">✓ ปิดการสนทนานี้</button>
+        </div>
+      </div>
+
+      <div class="message-stream" id="message-container">
+        <!-- Message 1 -->
+        <div class="msg-group inbound">
+          <div class="msg-bubble">
+            สวัสดีครับ สนใจติดตั้งระบบ AIZEN ให้ทีมงานดูแลลูกค้า 6 ท่านใช้งาน พร้อมเชื่อมต่อ LINE OA ครับ
+          </div>
+          <div class="msg-meta">10:40 · ลูกค้าส่งผ่าน LINE OA</div>
+        </div>
+
+        <!-- Message 2 -->
+        <div class="msg-group outbound">
+          <div class="msg-bubble">
+            สวัสดีครับ ยินดีให้บริการครับ ระบบ AIZEN รองรับการทำงานร่วมกันของเจ้าหน้าที่หลายท่านพร้อมกัน และสามารถเชื่อมต่อ LINE Messaging API เพื่อเริ่มใช้งานได้ทันทีครับ
+          </div>
+          <div class="msg-meta">10:41 · เจ้าหน้าที่บริการลูกค้า</div>
+        </div>
+
+        <!-- Message 3 -->
+        <div class="msg-group inbound">
+          <div class="msg-bubble">
+            สนใจสอบถามแพ็กเกจ Enterprise มีรอบอบรมการใช้งานวันไหนบ้างครับ และมีคู่มือภาษาไทยไหม?
+          </div>
+          <div class="msg-meta">10:42 · ลูกค้าส่งผ่าน LINE OA</div>
+        </div>
+      </div>
+
+      <!-- Composer -->
+      <footer class="composer" data-od-id="chat-composer">
+        <div class="composer-toolbar">
+          <div class="quick-templates">
+            <button class="chip" onclick="applyTemplate('แจ้งตารางรอบอบรม')">ตารางรอบอบรม Enterprise</button>
+            <button class="chip" onclick="applyTemplate('ส่งลิงก์คู่มือ')">คู่มือฉบับภาษาไทย</button>
+            <button class="chip" onclick="applyTemplate('ขอข้อมูลเพิ่มเติม')">สอบถามข้อมูลเพิ่มเติม</button>
+          </div>
+          <select class="channel-select" id="composer-channel-select" onchange="onChannelSelectChange(this.value)">
+            <option value="line">ส่งทาง: LINE OA</option>
+            <option value="email">ส่งทาง: Gmail</option>
+          </select>
+        </div>
+
+        <textarea class="composer-input" id="reply-text" placeholder="พิมพ์ข้อความตอบกลับ หรือเลือกคำตอบแนะนำจากระบบ AI ด้านขวา..."></textarea>
+
+        <div class="composer-footer">
+          <span class="composer-hint">Shift + Enter ขึ้นบรรทัดใหม่ · Enter เพื่อส่ง</span>
+          <button class="btn-send" id="btn-send-message" onclick="sendMessage()">
+            <span>ส่งข้อความ LINE OA</span>
+          </button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Column 3: AI Copilot & Knowledge Context -->
+    <aside class="sidebar-copilot" data-od-id="sidebar-copilot">
+      <div class="copilot-header">
+        <div class="copilot-title">
+          <span>⚡ AI Copilot</span>
+        </div>
+        <span class="badge-channel badge-gemini">✦ Gemini 1.5 Pro</span>
+      </div>
+
+      <div class="copilot-body">
+        <!-- AI Suggestion Card with Tone Switcher and Regenerate -->
+        <div class="copilot-card">
+          <div class="card-label">คำตอบแนะนำจากคลังความรู้</div>
+          <div class="tone-chips" id="tone-chips-container">
+            <button class="tone-chip active" onclick="setAiTone('formal', this)">👔 ทางการ</button>
+            <button class="tone-chip" onclick="setAiTone('concise', this)">⚡ กระชับ</button>
+            <button class="tone-chip" onclick="setAiTone('sales', this)">🤝 ปิดการขาย</button>
+            <button class="tone-chip" onclick="setAiTone('detail', this)">💡 ละเอียด</button>
+          </div>
+          <div class="suggestion-text" id="ai-suggestion-box">
+            แพ็กเกจ Enterprise มีรอบอบรมออนไลน์ทุกวันอังคารและพฤหัสบดี เวลา 14:00 น. ครับ พร้อมคู่มือภาษาไทยฉบับสมบูรณ์ และมีทีมงานเทคนิคคอยดูแลตลอดการติดตั้งครับ
+          </div>
+          <button class="btn-apply" onclick="useAiSuggestion()">+ นำข้อความนี้ไปตอบ</button>
+          <button class="btn-regenerate" onclick="regenerateAiSuggestion()">
+            <span>✦ สร้างคำตอบใหม่ (AI Re-generate)</span>
+          </button>
+        </div>
+
+        <!-- Automation Switch -->
+        <div class="copilot-card">
+          <div class="toggle-group">
+            <div>
+              <div style="font-weight: 600; font-size: var(--text-xs); color: var(--fg);">โหมดตอบกลับอัตโนมัติ</div>
+              <div style="font-size: var(--text-2xs); color: var(--muted);">ให้ AI ช่วยตอบคำถามเบื้องต้นทันที</div>
+            </div>
+            <div class="switch-ui" title="คลิกเพื่อเปิด/ปิดโหมดอัตโนมัติ" onclick="toggleAutoReply(this)">
+              <div class="switch-knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer & Knowledge Info -->
+        <div class="copilot-card">
+          <div class="card-label">ข้อมูลลูกค้า (SQLite)</div>
+          <div class="info-row">
+            <span class="info-label">ความสนใจ:</span>
+            <span class="info-value" style="color: var(--accent);">แพ็กเกจระดับองค์กร</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">จำนวนผู้ใช้งาน:</span>
+            <span class="info-value">6 บัญชี</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">การซิงก์:</span>
+            <span class="info-value">Google Sheets ปกติ</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">ประวัติการติดต่อ:</span>
+            <span class="info-value">3 รายการ</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <script>
+    let currentFilter = 'all';
+    let currentItemElem = document.querySelector('.conv-item.active');
+    let activeConvId = 'conv-1';
+
+    const CONV_DATA = {
+      'conv-1': {
+        name: 'คุณสมชาย พาณิชย์',
+        channel: 'line',
+        channelLabel: '● LINE OA',
+        status: 'pending',
+        id: 'U48a1290f...',
+        lead: 'สนใจแพ็กเกจระดับองค์กร',
+        userCount: '6 บัญชี',
+        sync: 'Google Sheets ปกติ',
+        history: '3 รายการ',
+        messages: [
+          { type: 'inbound', text: 'สวัสดีครับ สนใจติดตั้งระบบ AIZEN ให้ทีมงานดูแลลูกค้า 6 ท่านใช้งาน พร้อมเชื่อมต่อ LINE OA ครับ', time: '10:40 · ลูกค้าส่งผ่าน LINE OA' },
+          { type: 'outbound', text: 'สวัสดีครับ ยินดีให้บริการครับ ระบบ AIZEN รองรับการทำงานร่วมกันของเจ้าหน้าที่หลายท่านพร้อมกัน และสามารถเชื่อมต่อ LINE Messaging API เพื่อเริ่มใช้งานได้ทันทีครับ', time: '10:41 · เจ้าหน้าที่บริการลูกค้า' },
+          { type: 'inbound', text: 'สนใจสอบถามแพ็กเกจ Enterprise มีรอบอบรมการใช้งานวันไหนบ้างครับ และมีคู่มือภาษาไทยไหม?', time: '10:42 · ลูกค้าส่งผ่าน LINE OA' }
+        ],
+        aiSuggestion: 'แพ็กเกจ Enterprise มีรอบอบรมออนไลน์ทุกวันอังคารและพฤหัสบดี เวลา 14:00 น. ครับ พร้อมคู่มือภาษาไทยฉบับสมบูรณ์ และมีทีมงานเทคนิคคอยดูแลตลอดการติดตั้งครับ'
+      },
+      'conv-2': {
+        name: 'พัชราพร คลินิกเวชกรรม',
+        channel: 'email',
+        channelLabel: '✉ GMAIL',
+        status: 'pending',
+        id: 'contact@patchara-clinic.com',
+        lead: 'ขอใบเสนอราคาต่ออายุ',
+        userCount: '5 สาขา (12 บัญชี)',
+        sync: 'Airtable Sync เรียบร้อย',
+        history: '5 รายการ',
+        emailSubject: 'ขอใบเสนอราคาต่ออายุสมาชิกรายปี สำหรับ 5 สาขา',
+        messages: [
+          { type: 'inbound', text: 'เรียน ทีมงาน AIZEN,\n\nทางคลินิกต้องการต่ออายุการใช้งานระบบ AIZEN v2.0 สำหรับแพทย์และเจ้าหน้าที่ประจำสาขารวม 5 สาขา ขอความกรุณาออกใบเสนอราคาพร้อมรายละเอียดส่วนลดรายปีให้ด้วยค่ะ\n\nขอแสดงความนับถือ,\nพญ. พัชราพร', time: '10:15 · contact@patchara-clinic.com' },
+          { type: 'outbound', text: 'เรียน คุณหมอพัชราพร,\n\nทีมงานได้รับคำขอเรียบร้อยแล้วครับ กำลังจัดทำใบเสนอราคาแพ็กเกจ Multi-Branch 5 สาขา พร้อมส่วนลดรายปี 15% และจะส่งไฟล์ PDF แนบกลับไปทางอีเมลนี้ภายใน 30 นาทีครับ', time: '10:18 · เจ้าหน้าที่ฝ่ายขาย' }
+        ],
+        aiSuggestion: 'จัดเตรียมใบเสนอราคาแพ็กเกจ 5 สาขา มูลค่าส่วนลด 15% พร้อมรายละเอียดการรับชำระผ่านช่องทางธนาคารและใบกำกับภาษีเรียบร้อยครับ'
+      },
+      'conv-3': {
+        name: 'กิตติศักดิ์ โลจิสติกส์',
+        channel: 'line',
+        channelLabel: '● LINE OA',
+        status: 'pending',
+        id: 'U91bc7412...',
+        lead: 'ตรวจสอบหลักฐานการชำระเงิน',
+        userCount: '3 บัญชี',
+        sync: 'Google Sheets ปกติ',
+        history: '2 รายการ',
+        messages: [
+          { type: 'inbound', text: 'แนบสลิปโอนเงินให้ในแชทแล้วครับ ยอด 14,900 บาท สำหรับแพ็กเกจ Professional รบกวนช่วยตรวจสอบยอดให้ด้วยครับ', time: '09:50 · ลูกค้าส่งผ่าน LINE OA' }
+        ],
+        aiSuggestion: 'ได้รับหลักฐานการโอนเงินเรียบร้อยแล้วครับ ตรวจสอบยอด 14,900 บาท ถูกต้อง และเปิดสิทธิ์การใช้งานระบบให้ทันทีครับ'
+      },
+      'conv-4': {
+        name: 'บจก. สยามคอมเมิร์ซ',
+        channel: 'email',
+        channelLabel: '✉ GMAIL',
+        status: 'closed',
+        id: 'dev@siamcommerce.co.th',
+        lead: 'เชื่อมต่อระบบสำเร็จ',
+        userCount: '1 บัญชีผู้ดูแล',
+        sync: 'Webhook / SQLite',
+        history: '8 รายการ',
+        emailSubject: 'ยืนยันการรับส่ง Webhook กับระบบคลังสินค้าเสร็จสมบูรณ์',
+        messages: [
+          { type: 'inbound', text: 'สวัสดีครับ ทีมวิศวกรได้ทดสอบรับ Webhook จาก AIZEN ไปยังระบบ ERP ของเราแล้ว ทุกสถานะส่งครบถ้วน ขอปิดเคสเชื่อมต่อนี้ครับ', time: 'เมื่อวาน 16:30 · dev@siamcommerce.co.th' },
+          { type: 'outbound', text: 'ขอบคุณมากครับ หากต้องการทดสอบ endpoint เพิ่มเติม สามารถติดต่อทีมงานได้ตลอดเวลาครับ', time: 'เมื่อวาน 16:35 · เจ้าหน้าที่เทคนิค' }
+        ],
+        aiSuggestion: 'เคสนี้ได้รับการยืนยันการเชื่อมต่อเสร็จสมบูรณ์แล้ว ไม่จำเป็นต้องดำเนินการเพิ่มเติมครับ'
+      },
+      'conv-5': {
+        name: 'คุณธีรเดช เครื่องดื่มสากล',
+        channel: 'line',
+        channelLabel: '● LINE OA',
+        status: 'closed',
+        id: 'U23901aef...',
+        lead: 'ติดตั้งพร้อมใช้งาน',
+        userCount: '2 บัญชี',
+        sync: 'Google Sheets ปกติ',
+        history: '1 รายการ',
+        messages: [
+          { type: 'inbound', text: 'ได้รับกุญแจ API พร้อมคู่มือแนะนำเรียบร้อยแล้ว ขอบคุณทีมงานมากครับ ตอบรวดเร็วมาก', time: 'เมื่อวาน 14:10 · ลูกค้าส่งผ่าน LINE OA' },
+          { type: 'outbound', text: 'ยินดีเป็นอย่างยิ่งครับ หากมีข้อสงสัยการใช้งาน สอบถามได้ตลอด 24 ชม. ครับ', time: 'เมื่อวาน 14:12 · เจ้าหน้าที่บริการลูกค้า' }
+        ],
+        aiSuggestion: 'ขอบคุณที่ไว้วางใจใช้บริการ AIZEN ครับ หากมีข้อสงสัยสอบถามเพิ่มเติมได้ตลอดเวลาครับ'
+      }
+    };
+
+    // Theme Switcher Function
+    function switchTheme(themeKey, btn) {
+      document.documentElement.setAttribute('data-theme', themeKey);
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // Font Size Switcher Function (Accessibility & Senior Friendly)
+    function setFontSize(sizeKey, btn) {
+      document.documentElement.setAttribute('data-font-size', sizeKey);
+      document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        const target = document.querySelector(`.font-btn[data-size="${sizeKey}"]`);
+        if (target) target.classList.add('active');
+      }
+      try {
+        localStorage.setItem('aizen-font-size', sizeKey);
+      } catch (e) {}
+      showToast('ปรับขนาดตัวอักษร', `ปรับเป็นขนาด ${getFontSizeLabel(sizeKey)} เรียบร้อย`);
+    }
+
+    function getFontSizeLabel(key) {
+      switch(key) {
+        case 'sm': return 'เล็ก (กะทัดรัด)';
+        case 'lg': return 'ใหญ่ (อ่านสบายตา)';
+        case 'xl': return 'ใหญ่พิเศษ (สำหรับผู้สูงอายุ)';
+        default: return 'ปกติ (มาตรฐาน)';
+      }
+    }
+
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterConversations();
+    }
+
+    function filterConversations() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+      const items = document.querySelectorAll('#conv-list-container .conv-item');
+
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        const ch = item.getAttribute('data-channel');
+        const st = item.getAttribute('data-status');
+
+        let matchFilter = true;
+        if (currentFilter === 'line') matchFilter = (ch === 'line');
+        else if (currentFilter === 'email') matchFilter = (ch === 'email');
+        else if (currentFilter === 'pending') matchFilter = (st === 'pending');
+        else if (currentFilter === 'closed') matchFilter = (st === 'closed');
+
+        const matchSearch = !q || text.includes(q);
+
+        if (matchFilter && matchSearch) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function selectConversation(id, elem) {
+      document.querySelectorAll('.conv-item').forEach(i => i.classList.remove('active'));
+      elem.classList.add('active');
+      currentItemElem = elem;
+      activeConvId = id;
+
+      const data = CONV_DATA[id];
+      if (!data) return;
+
+      document.getElementById('active-chat-title').innerText = data.name;
+      document.getElementById('active-chat-id').innerText = data.id;
+
+      // Update Channel Badge in Header
+      const channelBadge = document.getElementById('active-chat-channel');
+      const chatContainer = document.getElementById('chat-view-container');
+      const channelSelect = document.getElementById('composer-channel-select');
+      const btnSend = document.getElementById('btn-send-message');
+
+      if (data.channel === 'line') {
+        channelBadge.className = 'badge-channel badge-line badge-solid';
+        channelBadge.innerText = '● LINE OA';
+        chatContainer.classList.remove('channel-email');
+        chatContainer.classList.add('channel-line');
+        channelSelect.value = 'line';
+        btnSend.innerHTML = '<span>ส่งข้อความ LINE OA</span>';
+      } else {
+        channelBadge.className = 'badge-channel badge-email badge-solid';
+        channelBadge.innerText = '✉ GMAIL';
+        chatContainer.classList.remove('channel-line');
+        chatContainer.classList.add('channel-email');
+        channelSelect.value = 'email';
+        btnSend.innerHTML = '<span>ส่งอีเมลตอบกลับ (Gmail)</span>';
+      }
+
+      // Update SQLite Info in Copilot
+      const infoValues = document.querySelectorAll('.sidebar-copilot .info-value');
+      if (infoValues.length >= 4) {
+        infoValues[0].innerText = data.lead;
+        infoValues[1].innerText = data.userCount;
+        infoValues[2].innerText = data.sync;
+        infoValues[3].innerText = data.history;
+      }
+
+      // Update AI Suggestion
+      document.getElementById('ai-suggestion-box').innerText = data.aiSuggestion;
+
+      // Update Messages Stream
+      renderMessages(data);
+
+      updateStatusUI(data.status);
+    }
+
+    function onChannelSelectChange(val) {
+      const chatContainer = document.getElementById('chat-view-container');
+      const channelBadge = document.getElementById('active-chat-channel');
+      const btnSend = document.getElementById('btn-send-message');
+
+      if (val === 'line') {
+        chatContainer.classList.remove('channel-email');
+        chatContainer.classList.add('channel-line');
+        channelBadge.className = 'badge-channel badge-line badge-solid';
+        channelBadge.innerText = '● LINE OA';
+        btnSend.innerHTML = '<span>ส่งข้อความ LINE OA</span>';
+      } else {
+        chatContainer.classList.remove('channel-line');
+        chatContainer.classList.add('channel-email');
+        channelBadge.className = 'badge-channel badge-email badge-solid';
+        channelBadge.innerText = '✉ GMAIL';
+        btnSend.innerHTML = '<span>ส่งอีเมลตอบกลับ (Gmail)</span>';
+      }
+    }
+
+    /* ===== Micro-Interaction & Particle Animations ===== */
+    function spawnFloatingEmoji(emoji, x, y) {
+      for (let i = 0; i < 3; i++) {
+        const span = document.createElement('span');
+        span.className = 'floating-emoji';
+        span.innerText = emoji;
+        const offsetX = (Math.random() - 0.5) * 32;
+        const offsetY = (Math.random() - 0.5) * 16;
+        span.style.left = `${(x || window.innerWidth / 2) + offsetX}px`;
+        span.style.top = `${(y || window.innerHeight / 2) + offsetY}px`;
+        span.style.animationDelay = `${i * 0.07}s`;
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 750);
+      }
+    }
+
+    function playSound(type) {
+      // Audio disabled per user preference
+    }
+
+    /* ===== Toast Notification System ===== */
+    function showToast(title, desc = '', icon = '✦') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast-item';
+      toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          ${desc ? `<div class="toast-desc">${desc}</div>` : ''}
+        </div>
+        <div class="toast-progress"></div>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 250);
+      }, 2800);
+    }
+
+    /* ===== Confetti Particle Animation ===== */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#06c755', '#ea4335', '#0284c7', '#f59e0b', '#8b5cf6', '#10b981', '#ec4899'];
+      const particles = [];
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: window.innerWidth * 0.5 + (Math.random() - 0.5) * 220,
+          y: window.innerHeight * 0.3,
+          w: Math.random() * 8 + 4,
+          h: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 14,
+          vy: Math.random() * -11 - 5,
+          gravity: 0.38,
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 14,
+          opacity: 1
+        });
+      }
+
+      let startTime = null;
+      function animate(time) {
+        if (!startTime) startTime = time;
+        const progress = time - startTime;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.rotSpeed;
+          if (progress > 1200) p.opacity -= 0.02;
+
+          if (p.opacity > 0 && p.y < canvas.height) {
+            alive = true;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+        });
+
+        if (alive && progress < 3200) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    /* ===== Message Stream Rendering & Reactions ===== */
+    function renderMessages(data) {
+      const container = document.getElementById('message-container');
+      let html = '';
+
+      if (data.channel === 'email' && data.emailSubject) {
+        html += `
+          <div class="email-thread-card">
+            <div class="email-subject-line">
+              <span class="badge-channel badge-email badge-solid" style="font-size: 9px; padding: 1px 4px;">GMAIL</span>
+              <span>หัวข้อ: ${data.emailSubject}</span>
+            </div>
+            <div class="email-meta-info">
+              <span>จาก: ${data.id}</span>
+              <span>ถึง: support@aizen.app</span>
+              <span>สถานะ: เข้ารหัส TLS สมบูรณ์</span>
+            </div>
+          </div>
+        `;
+      }
+
+      data.messages.forEach((msg, idx) => {
+        const groupClass = msg.type === 'inbound' ? 'inbound' : 'outbound';
+        const formattedText = msg.text.replace(/\n/g, '<br/>');
+        html += `
+          <div class="msg-group ${groupClass}" data-msg-idx="${idx}">
+            <div class="msg-bubble-wrapper">
+              <div class="reaction-bar">
+                <button class="reaction-btn" onclick="addReaction(this, '👍')" title="ถูกใจ">👍</button>
+                <button class="reaction-btn" onclick="addReaction(this, '❤️')" title="ประทับใจ">❤️</button>
+                <button class="reaction-btn" onclick="addReaction(this, '🙏')" title="ขอบคุณ">🙏</button>
+                <button class="reaction-btn" onclick="addReaction(this, '📦')" title="สินค้า/แพ็กเกจ">📦</button>
+                <button class="reaction-btn" onclick="addReaction(this, '✨')" title="ยอดเยี่ยม">✨</button>
+                <button class="reaction-copy-btn" onclick="copyMessageText(this)" title="คัดลอกข้อความ">📋 คัดลอก</button>
+              </div>
+              <div class="msg-bubble">${formattedText}</div>
+              <div class="bubble-reactions"></div>
+            </div>
+            <div class="msg-meta">${msg.time}</div>
+          </div>
+        `;
+      });
+
+      // Typing Indicator inside container
+      html += `
+        <div class="typing-indicator-container" id="typing-indicator">
+          <div class="typing-indicator-bubble">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+          <div class="typing-label" id="typing-label">ลูกค้ากำลังพิมพ์...</div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addReaction(btn, emoji) {
+      const bubbleWrapper = btn.closest('.msg-bubble-wrapper');
+      if (!bubbleWrapper) return;
+      const reactionsDiv = bubbleWrapper.querySelector('.bubble-reactions');
+      if (!reactionsDiv) return;
+
+      const rect = btn.getBoundingClientRect();
+      spawnFloatingEmoji(emoji, rect.left + rect.width / 2, rect.top);
+
+      let badge = Array.from(reactionsDiv.children).find(b => b.getAttribute('data-emoji') === emoji);
+      if (badge) {
+        let count = parseInt(badge.getAttribute('data-count') || '1', 10) + 1;
+        badge.setAttribute('data-count', count);
+        badge.innerHTML = `${emoji} <span style="font-size: 10px; font-weight: 600; color: var(--fg);">${count}</span>`;
+      } else {
+        badge = document.createElement('span');
+        badge.className = 'reaction-badge';
+        badge.setAttribute('data-emoji', emoji);
+        badge.setAttribute('data-count', '1');
+        badge.innerHTML = `${emoji} <span style="font-size: 10px; font-weight: 600; color: var(--fg);">1</span>`;
+        badge.onclick = function() {
+          let count = parseInt(this.getAttribute('data-count') || '1', 10) + 1;
+          this.setAttribute('data-count', count);
+          this.innerHTML = `${emoji} <span style="font-size: 10px; font-weight: 600; color: var(--fg);">${count}</span>`;
+          const brect = this.getBoundingClientRect();
+          spawnFloatingEmoji(emoji, brect.left + brect.width / 2, brect.top);
+        };
+        reactionsDiv.appendChild(badge);
+      }
+    }
+
+    function copyMessageText(btn) {
+      const bubbleWrapper = btn.closest('.msg-bubble-wrapper');
+      if (!bubbleWrapper) return;
+      const bubble = bubbleWrapper.querySelector('.msg-bubble');
+      if (!bubble) return;
+      const text = bubble.innerText;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      }
+      playSound('pop');
+      showToast('คัดลอกข้อความแล้ว', text.slice(0, 32) + (text.length > 32 ? '...' : ''), '📋');
+    }
+
+    function showTyping(label = 'ลูกค้ากำลังพิมพ์...') {
+      const indicator = document.getElementById('typing-indicator');
+      const labelElem = document.getElementById('typing-label');
+      if (indicator) {
+        if (labelElem) labelElem.innerText = label;
+        indicator.style.display = 'flex';
+        const container = document.getElementById('message-container');
+        if (container) container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function hideTyping() {
+      const indicator = document.getElementById('typing-indicator');
+      if (indicator) indicator.style.display = 'none';
+    }
+
+    /* ===== Live Inbound Simulation ===== */
+    const SAMPLE_INBOUNDS = [
+      {
+        question: 'สอบถามเพิ่มเติมครับ หากต้องการทดลองใช้งานฟรี (Free Trial) ก่อน 7 วัน สามารถเริ่มได้เลยไหมครับ?',
+        aiResp: 'สามารถเริ่มทดลองใช้งานฟรี 7 วันได้ทันทีครับ โดยทีมงานจะสร้างบัญชี Sandbox และส่งรหัสทดสอบให้ทางแชทนี้ได้เลยครับ สนใจให้เริ่มติดตั้งเลยไหมครับ?'
+      },
+      {
+        question: 'ระบบสามารถออกใบเสร็จรับเงิน / ใบกำกับภาษีเต็มรูปแบบในนามนิติบุคคลได้ไหมครับ?',
+        aiResp: 'สามารถออกใบกำกับภาษีและใบเสร็จรับเงินในนามนิติบุคคลได้ครบถ้วนครับ โดยส่งข้อมูล ภ.พ.20 และที่อยู่ออกใบเสร็จเข้ามาในระบบได้เลยครับ'
+      },
+      {
+        question: 'ถ้าทีมงานมี 10 คน และต้องการแบ่งกลุ่มลูกค้าตามแท็ก (Tag) ระบบรองรับไหมครับ?',
+        aiResp: 'รองรับการติดแท็กลูกค้า (Customer Tagging) และกระจายแชทตามทีม (Smart Routing) ได้แบบไม่จำกัดจำนวนแท็กในทุกแพ็กเกจครับ'
+      }
+    ];
+    let inboundCounter = 0;
+
+    function simulateInbound() {
+      const conv = CONV_DATA[activeConvId];
+      if (!conv) return;
+
+      const sample = SAMPLE_INBOUNDS[inboundCounter % SAMPLE_INBOUNDS.length];
+      inboundCounter++;
+
+      const channelName = conv.channel === 'email' ? 'Gmail' : 'LINE OA';
+      showTyping(`ลูกค้ากำลังพิมพ์ผ่าน ${channelName}...`);
+
+      setTimeout(() => {
+        hideTyping();
+        const timeNow = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+        const newMsg = {
+          type: 'inbound',
+          text: sample.question,
+          time: `${timeNow} · ลูกค้าส่งผ่าน ${channelName}`
+        };
+        conv.messages.push(newMsg);
+        conv.aiSuggestion = sample.aiResp;
+
+        renderMessages(conv);
+        playSound('receive');
+        showToast('ข้อความใหม่จากลูกค้า', `ส่งข้อความผ่าน ${channelName} เรียบร้อย`, '💬');
+
+        // AI Copilot Shimmer update
+        const aiBox = document.getElementById('ai-suggestion-box');
+        if (aiBox) {
+          aiBox.classList.add('shimmer-loading');
+          setTimeout(() => {
+            aiBox.innerText = sample.aiResp;
+            aiBox.classList.remove('shimmer-loading');
+            showToast('AI ประมวลผลคำตอบใหม่สำเร็จ', 'อ้างอิงจากคลังข้อมูล SQLite', '✦');
+          }, 450);
+        }
+      }, 1100);
+    }
+
+    /* ===== AI Tone Selector & Regenerate ===== */
+    const AI_TONES = {
+      formal: {
+        title: 'ทางการ',
+        text: 'ทางระบบ AIZEN ขอเรียนชี้แจงว่า สำหรับแพ็กเกจ Enterprise มีรอบการฝึกอบรมการใช้งานออนไลน์ทุกวันอังคารและพฤหัสบดี เวลา 14:00 น. พร้อมคู่มือภาษาไทยฉบับสมบูรณ์ และมีทีมวิศวกรคอยดูแลความพร้อมตลอดการติดตั้งครับ'
+      },
+      concise: {
+        title: 'กระชับ',
+        text: 'รอบอบรมมีทุก อังคาร-พฤหัสฯ เวลา 14:00 น. ผ่านระบบออนไลน์ มีคู่มือไทยครบ และทีมช่างดูแลติดตั้งฟรีครับ'
+      },
+      sales: {
+        title: 'ปิดการขาย',
+        text: 'รอบอบรมมีทุกอังคาร-พฤหัสฯ เวลา 14:00 น. ครับ และพิเศษสัปดาห์นี้ หากยืนยันแพ็กเกจ Enterprise รับฟรีอบรม Private On-site 1 วันเต็มทันทีครับ ต้องการให้จัดเตรียมใบเสนอราคาเลยไหมครับ?'
+      },
+      detail: {
+        title: 'ละเอียด',
+        text: 'แพ็กเกจ Enterprise รองรับการใช้งาน 6 บัญชีขึ้นไป ซิงก์ Google Sheets/Airtable อัตโนมัติ พร้อมระบบ SQLite Webhook แบบ Real-time มีรอบอบรมออนไลน์ 2 วันต่อสัปดาห์ (อังคาร/พฤหัสฯ 14:00 น.) และบันทึกวิดีโอย้อนหลังพร้อมคู่มือ PDF ฉบับภาษาไทยครับ'
+      }
+    };
+
+    function setAiTone(tone, btn) {
+      document.querySelectorAll('.tone-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const aiBox = document.getElementById('ai-suggestion-box');
+      if (!aiBox) return;
+
+      playSound('pop');
+      aiBox.classList.add('shimmer-loading');
+
+      setTimeout(() => {
+        const item = AI_TONES[tone] || AI_TONES.formal;
+        aiBox.innerText = item.text;
+        if (CONV_DATA[activeConvId]) {
+          CONV_DATA[activeConvId].aiSuggestion = item.text;
+        }
+        aiBox.classList.remove('shimmer-loading');
+        showToast(`ปรับโทนคำตอบ: ${item.title}`, 'AI เรียบเรียงคำตอบใหม่ตามสไตล์ที่เลือก', '⚡');
+      }, 320);
+    }
+
+    function regenerateAiSuggestion() {
+      const aiBox = document.getElementById('ai-suggestion-box');
+      if (!aiBox) return;
+
+      playSound('pop');
+      aiBox.classList.add('shimmer-loading');
+
+      setTimeout(() => {
+        aiBox.classList.remove('shimmer-loading');
+        playSound('receive');
+        showToast('สร้างคำตอบใหม่เรียบร้อย', 'ประมวลผลผ่าน Gemini 1.5 Pro', '✦');
+      }, 450);
+    }
+
+    function updateStatusUI(status) {
+      const statusBadge = document.getElementById('active-chat-status');
+      const toggleBtn = document.getElementById('btn-toggle-status');
+
+      if (status === 'closed') {
+        statusBadge.innerText = '• ปิดการสนทนาแล้ว';
+        statusBadge.style.background = 'var(--surface-subtle)';
+        statusBadge.style.color = 'var(--muted)';
+        statusBadge.style.borderColor = 'var(--border)';
+        toggleBtn.innerText = '↺ เปิดการสนทนาใหม่';
+      } else {
+        statusBadge.innerText = '• รอเจ้าหน้าที่ตอบ';
+        statusBadge.style.background = '#fef2f2';
+        statusBadge.style.color = '#b91c1c';
+        statusBadge.style.borderColor = '#fecaca';
+        toggleBtn.innerText = '✓ ปิดการสนทนานี้';
+      }
+    }
+
+    function toggleCaseStatus() {
+      if (!currentItemElem) return;
+      const current = currentItemElem.getAttribute('data-status');
+      const next = (current === 'closed') ? 'pending' : 'closed';
+      
+      currentItemElem.setAttribute('data-status', next);
+      if (CONV_DATA[activeConvId]) {
+        CONV_DATA[activeConvId].status = next;
+      }
+
+      const pill = currentItemElem.querySelector('.status-pill');
+      if (pill) {
+        if (next === 'closed') {
+          pill.className = 'status-pill status-closed';
+          pill.innerText = 'ปิดการสนทนา';
+        } else {
+          pill.className = 'status-pill status-pending';
+          pill.innerText = 'รอตอบ';
+        }
+      }
+
+      updateStatusUI(next);
+      filterConversations();
+
+      if (next === 'closed') {
+        playSound('celebrate');
+        triggerConfetti();
+        showToast('🎉 ปิดการสนทนาเรียบร้อย', 'บันทึกข้อมูลสถิติไปยัง SQLite เรียบร้อย', '✓');
+      } else {
+        playSound('pop');
+        showToast('↺ เปิดการสนทนาใหม่อีกครั้ง', 'เปลี่ยนสถานะเป็นรอเจ้าหน้าที่ตอบ', '↺');
+      }
+    }
+
+    function useAiSuggestion() {
+      const text = document.getElementById('ai-suggestion-box').innerText.trim();
+      const input = document.getElementById('reply-text');
+      input.value = text;
+      input.focus();
+      playSound('pop');
+      showToast('นำคำตอบ AI ไปยังกล่องข้อความ', 'กดส่ง หรือ ปรับแต่งข้อความต่อได้ทันที', '⚡');
+    }
+
+    function applyTemplate(type) {
+      const input = document.getElementById('reply-text');
+      if (type === 'แจ้งตารางรอบอบรม') {
+        input.value = 'รอบอบรมครั้งถัดไปจัดขึ้นในวันพฤหัสบดี เวลา 14:00 - 15:30 น. ผ่านระบบออนไลน์ (Google Meet) ครับ';
+      } else if (type === 'ส่งลิงก์คู่มือ') {
+        input.value = 'ท่านสามารถศึกษาคู่มือการตั้งค่าและการใช้งานฉบับภาษาไทยได้ที่ https://aizen.app/docs/th ครับ';
+      } else {
+        input.value = 'ขออนุญาตสอบถามข้อมูลเพิ่มเติม เช่น เบอร์ติดต่อหรือจำนวนสาขา เพื่อจัดเตรียมรายละเอียดและใบเสนอราคาให้ตรงตามการใช้งานครับ';
+      }
+      input.focus();
+      playSound('pop');
+      showToast(`เลือกแม่แบบ: ${type}`, 'ใส่เนื้อหาลงกล่องพิมพ์แล้ว', '📄');
+    }
+
+    let isAutoReplyActive = true;
+
+    function sendMessage() {
+      const input = document.getElementById('reply-text');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const isEmail = document.getElementById('chat-view-container').classList.contains('channel-email');
+      const metaChannel = isEmail ? 'ส่งผ่าน Gmail' : 'ส่งผ่าน LINE OA';
+
+      playSound('send');
+
+      const msgObj = {
+        type: 'outbound',
+        text: val,
+        time: `เมื่อสักครู่ · เจ้าหน้าที่ (${metaChannel})`
+      };
+
+      if (CONV_DATA[activeConvId]) {
+        CONV_DATA[activeConvId].messages.push(msgObj);
+      }
+
+      renderMessages(CONV_DATA[activeConvId]);
+      input.value = '';
+      showToast('ส่งข้อความเรียบร้อย', metaChannel, '✓');
+
+      // Auto-reply simulation if enabled
+      if (isAutoReplyActive) {
+        setTimeout(() => {
+          showTyping('ลูกค้ากำลังอ่านและตอบกลับ...');
+          setTimeout(() => {
+            hideTyping();
+            const timeNow = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+            const replyMsg = {
+              type: 'inbound',
+              text: 'รับทราบครับ เดี๋ยวแจ้งข้อมูลกับทีมงานและส่งรายละเอียดให้ทางนี้เพิ่มเติมนะครับ ขอบคุณครับ!',
+              time: `${timeNow} · ลูกค้าส่งผ่าน ${isEmail ? 'Gmail' : 'LINE OA'}`
+            };
+            if (CONV_DATA[activeConvId]) {
+              CONV_DATA[activeConvId].messages.push(replyMsg);
+              renderMessages(CONV_DATA[activeConvId]);
+            }
+            playSound('receive');
+            showToast('ลูกค้าตอบกลับมาแล้ว', 'รับทราบข้อมูลเรียบร้อย', '💬');
+          }, 1500);
+        }, 700);
+      }
+    }
+
+    // Enter to send, Shift+Enter for new line
+    document.getElementById('reply-text').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function toggleAutoReply(elem) {
+      isAutoReplyActive = !isAutoReplyActive;
+      const knob = elem.querySelector('.switch-knob');
+      if (!isAutoReplyActive) {
+        elem.style.backgroundColor = '#cbd5e1';
+        knob.style.left = '2px';
+        knob.style.right = 'auto';
+        playSound('pop');
+        showToast('ปิดโหมดตอบกลับอัตโนมัติ', 'ระบบจะไม่จำลองการตอบกลับของลูกค้า', '⏸');
+      } else {
+        elem.style.backgroundColor = '#10b981';
+        knob.style.right = '2px';
+        knob.style.left = 'auto';
+        playSound('pop');
+        showToast('เปิดโหมดตอบกลับอัตโนมัติ', 'ระบบจะจำลองการตอบกลับแบบเรียลไทม์', '▶');
+      }
+    }
+
+    // Initial render for active conversation
+    if (CONV_DATA['conv-1']) {
+      renderMessages(CONV_DATA['conv-1']);
+    }
+
+    // Restore saved font size preference
+    try {
+      const savedFontSize = localStorage.getItem('aizen-font-size');
+      if (savedFontSize && savedFontSize !== 'md') {
+        setFontSize(savedFontSize);
+      }
+    } catch(e) {}
+  </script>
+
+  <!-- Confetti Canvas for Celebrating Resolved Cases -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Floating Toast Notifications Container -->
+  <div class="toast-container" id="toast-container"></div>
+</body>
+</html>

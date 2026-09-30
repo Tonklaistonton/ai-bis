@@ -1,0 +1,87 @@
+{
+  "config": {
+    "mode": "copilot",
+    "aiProvider": "smart_nlp",
+    "geminiApiKey": "",
+    "geminiModel": "gemini-1.5-flash",
+    "openaiApiKey": "",
+    "openaiModel": "gpt-4o-mini",
+    "lineChannelSecret": "",
+    "lineAccessToken": "",
+    "gmailUser": "",
+    "gmailAppPassword": "",
+    "webhookDomain": "",
+    "activeDatabase": "airtable",
+    "autoSyncEnabled": false,
+    "autoSyncIntervalMinutes": 2,
+    "googleSheetUrl": "",
+    "googleSheetProductsGid": "0",
+    "googleSheetFaqsGid": "",
+    "googleSheetOrdersGid": "",
+    "airtableApiKey": "",
+    "airtableBaseId": "",
+    "airtableProductTable": "",
+    "airtableFaqTable": "",
+    "airtableOrderTable": ""
+  },
+  "knowledge": {
+    "shopName": "ร้านทดสอบ (Fixture)",
+    "openingHours": "จันทร์-ศุกร์ 09:00-18:00",
+    "contactInfo": "โทร 000-000-0000",
+    "products": "สินค้าทดสอบ A\nสินค้าทดสอบ B",
+    "promotions": "-",
+    "payment": "-",
+    "delivery": "-",
+    "persona": "สุภาพ เป็นมิตร"
+  },
+  "airtableData": { "products": [], "faqs": [], "orderGuides": [], "lastSync": null },
+  "sheetsData": { "products": [], "faqs": [], "orderGuides": [], "lastSync": null },
+  "lineChats": [
+    {
+      "id": "fx-1",
+      "userId": "Ufixture001",
+      "userName": "ลูกค้าทดสอบ ๑",
+      "userAvatar": "",
+      "text": "สวัสดีครับ สินค้าราคาเท่าไหร่",
+      "reply": "",
+      "isBot": false,
+      "status": "delivered",
+      "timestamp": "2026-09-30T08:00:00.000Z"
+    },
+    {
+      "id": "fx-2",
+      "userId": "Ufixture001",
+      "userName": "ลูกค้าทดสอบ ๑",
+      "userAvatar": "",
+      "text": "สวัสดีครับ ร้านเปิดกี่โมง",
+      "reply": "ร้านเปิด 09:00-18:00 ครับ",
+      "replyToken": "fixture-reply-token",
+      "messageId": "fx-2",
+      "isBot": false,
+      "status": "pending_approval",
+      "timestamp": "2026-09-30T08:05:00.000Z"
+    },
+    {
+      "id": "fx-3",
+      "userId": "Ufixture002",
+      "userName": "ลูกค้าทดสอบ ๒",
+      "userAvatar": "",
+      "text": "ของมีพร้อมส่งไหม",
+      "reply": "",
+      "isBot": false,
+      "status": "delivered",
+      "timestamp": "2026-09-30T08:10:00.000Z"
+    }
+  ],
+  "emails": [
+    {
+      "id": "fx-em1",
+      "senderName": "ร้านทดสอบ (Fixture)",
+      "senderEmail": "customer@example.com",
+      "subject": "แจ้งรายการสั่งซื้อ",
+      "body": "นี่คืออีเมลทดสอบจากระบบ fixture",
+      "status": "replied",
+      "timestamp": "2026-09-30T07:30:00.000Z"
+    }
+  ]
+}
