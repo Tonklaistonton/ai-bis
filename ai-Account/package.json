@@ -1,0 +1,13 @@
+{
+  "name": "aizen-account",
+  "version": "1.0.0",
+  "description": "AI-powered accounting, slip scanner, and expense management",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

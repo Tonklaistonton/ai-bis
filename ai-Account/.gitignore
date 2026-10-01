@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Database (contains transaction records)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db-journal
+
+# Secrets
+.env
+*.env
+*.local
+
+# Logs
+*.log
+.DS_Store
+Thumbs.db

@@ -845,6 +845,12 @@
       border: none !important;
       box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
     }
+    .badge-openai {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff !important;
+      border: none !important;
+      box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
+    }
 
     /* Col 3: AI Copilot */
     .sidebar-copilot {
@@ -1823,7 +1829,7 @@
         <div class="copilot-title">
           <span>⚡ AI Copilot</span>
         </div>
-        <span class="badge-channel badge-gemini">✦ Gemini 1.5 Pro</span>
+        <span class="badge-channel badge-gemini" id="copilot-model-badge">✦ Gemini 1.5 Pro</span>
       </div>
 
       <div class="copilot-body">
@@ -2954,7 +2960,7 @@
         // Fill Form Fields
         document.getElementById('cfg-gemini-key').placeholder = adminConfigData.geminiApiKey || 'กรอก Gemini API Key...';
         document.getElementById('cfg-openai-key').placeholder = adminConfigData.openaiApiKey || 'กรอก OpenAI API Key...';
-        document.getElementById('cfg-openai-model').value = adminConfigData.openaiModel || 'gpt-4o-mini';
+        document.getElementById('cfg-openai-model').value = adminConfigData.openaiModel || '';
         document.getElementById('cfg-openai-endpoint').value = adminConfigData.openaiEndpoint || '';
         document.getElementById('cfg-ai-provider').value = adminConfigData.aiProvider || 'gemini';
         document.getElementById('cfg-mode').value = adminConfigData.mode || 'copilot';
@@ -2988,6 +2994,13 @@
           if (st.gmailConfigured) parts.push('Gmail พร้อม');
           parts.push(`AI: ${st.aiProvider || 'gemini'}`);
           badge.textContent = parts.join(' · ');
+        }
+        const modelBadge = document.getElementById('copilot-model-badge');
+        if (modelBadge) {
+          const isOp = (st.aiProvider === 'openai');
+          const modelName = isOp ? (st.openaiModel || 'GPT-4o') : (st.geminiModel || 'Gemini 1.5 Pro');
+          modelBadge.textContent = `✦ ${modelName}`;
+          modelBadge.className = `badge-channel ${isOp ? 'badge-openai' : 'badge-gemini'}`;
         }
       } catch(e) {}
     }

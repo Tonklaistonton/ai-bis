@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIZEN Account - ระบบจัดการบัญชีและตรวจสลิป AI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .card-stat { border-radius: 12px; border: none; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
+    .badge-pending { background-color: #fef3c7; color: #92400e; }
+    .badge-verified { background-color: #d1fae5; color: #065f46; }
+    .badge-rejected { background-color: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body class="p-4">
+  <div class="container-fluid" style="max-width: 1200px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="fw-bold m-0">AIZEN Account 📊</h3>
+        <p class="text-muted m-0">ระบบตรวจสลิปอัตโนมัติ บันทึกรายรับ-รายจ่าย (Human-in-the-loop)</p>
+      </div>
+      <div>
+        <span class="badge bg-primary px-3 py-2">Port: 3001</span>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="card card-stat p-3 bg-white">
+          <small class="text-muted">รายรับรวม (Verified)</small>
+          <h4 class="text-success fw-bold mt-1" id="stat-income">฿0.00</h4>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stat p-3 bg-white">
+          <small class="text-muted">รายจ่ายรวม (Verified)</small>
+          <h4 class="text-danger fw-bold mt-1" id="stat-expense">฿0.00</h4>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stat p-3 bg-white">
+          <small class="text-muted">ยอดสุทธิ (Net)</small>
+          <h4 class="text-primary fw-bold mt-1" id="stat-net">฿0.00</h4>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stat p-3 bg-white border-warning">
+          <small class="text-warning fw-bold">รอตรวจสอบ (Pending)</small>
+          <h4 class="text-warning fw-bold mt-1" id="stat-pending">0 รายการ</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main List -->
+    <div class="card card-stat bg-white p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0">รายการสลิปและธุรกรรมล่าสุด</h5>
+        <button class="btn btn-outline-secondary btn-sm" onclick="loadData()">รีเฟรช</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>วัน-เวลา</th>
+              <th>ประเภท</th>
+              <th>จำนวนเงิน</th>
+              <th>เลขอ้างอิง</th>
+              <th>รายละเอียด / ที่มา</th>
+              <th>สถานะ</th>
+              <th class="text-end">การจัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="transaction-list">
+            <tr><td colspan="7" class="text-center text-muted">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadData() {
+      try {
+        const [sumRes, txRes] = await Promise.all([
+          fetch('/api/summary').then(r => r.json()),
+          fetch('/api/transactions').then(r => r.json())
+        ]);
+
+        document.getElementById('stat-income').innerText = '฿' + (sumRes.income || 0).toLocaleString('th-TH', {minimumFractionDigits: 2});
+        document.getElementById('stat-expense').innerText = '฿' + (sumRes.expense || 0).toLocaleString('th-TH', {minimumFractionDigits: 2});
+        document.getElementById('stat-net').innerText = '฿' + (sumRes.net || 0).toLocaleString('th-TH', {minimumFractionDigits: 2});
+        document.getElementById('stat-pending').innerText = `${sumRes.pendingCount || 0} รายการ (฿${(sumRes.pendingTotal || 0).toLocaleString()})`;
+
+        const tbody = document.getElementById('transaction-list');
+        if (!txRes.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">ยังไม่มีรายการ</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = txRes.map(t => `
+          <tr>
+            <td><small class="text-muted">${t.created_at}</small></td>
+            <td><span class="badge ${t.type === 'income' ? 'bg-success' : 'bg-danger'}">${t.type}</span></td>
+            <td class="fw-bold ${t.type === 'income' ? 'text-success' : 'text-danger'}">฿${Number(t.amount).toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+            <td><code>${t.reference_no || '-'}</code></td>
+            <td>
+              <div>${t.description || '-'}</div>
+              <small class="text-muted">แหล่งที่มา: ${t.source}</small>
+            </td>
+            <td>
+              <span class="badge badge-${t.status} px-2 py-1">${t.status}</span>
+            </td>
+            <td class="text-end">
+              ${t.status === 'pending' ? `
+                <button class="btn btn-sm btn-success me-1" onclick="verify(${t.id})">ยืนยัน</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="reject(${t.id})">ปฏิเสธ</button>
+              ` : `<small class="text-muted">${t.status === 'verified' ? 'ตรวจสอบแล้ว' : 'ปฏิเสธแล้ว'}</small>`}
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function verify(id) {
+      if (!confirm('ยืนยันความถูกต้องของรายการนี้เข้าสู่ระบบบัญชี?')) return;
+      await fetch('/api/transactions/' + id + '/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ verified_by: 'admin' })
+      });
+      loadData();
+    }
+
+    async function reject(id) {
+      if (!confirm('ต้องการปฏิเสธรายการนี้ใช่หรือไม่?')) return;
+      await fetch('/api/transactions/' + id + '/reject', { method: 'POST' });
+      loadData();
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

@@ -1002,6 +1002,8 @@ app.get('/api/status', (req, res) => {
     geminiConfigured: Boolean(config.geminiApiKey),
     openaiConfigured: Boolean(config.openaiApiKey),
     aiProvider: config.aiProvider || 'gemini',
+    geminiModel: config.geminiModel || 'gemini-2.0-flash',
+    openaiModel: config.openaiModel || 'gpt-4o-mini',
     mode: config.mode,
     timestamp: new Date().toISOString()
   });
