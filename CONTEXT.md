@@ -19,16 +19,17 @@
 - **Channel (ช่องทางสื่อสาร)**: ช่องทางเชื่อมต่อภายนอก เช่น LINE Official Account หรือ Gmail (SMTP)
   - ผูกขาดกับระดับ **Team** (`Channel *..1 Team`)
   - แต่ละทีมมี Channel การสื่อสารเป็นของตนเอง
-- **Conversation (บทสนทนา / ห้องแชท)**: ลำดับข้อความระหว่างลูกค้าภายนอก (Customer) กับระบบผ่าน Channel ใด Channel หนึ่ง
+- **Conversation (บทสนทนา / ห้องแชท)**: ลำดับข้อความระหว่างลูกค้าภายนอก (Customer) กับระบบผ่าน Channel ใด Channel หนึ่ง (ทั้ง LINE และ Email)
 - **Customer (ลูกค้า)**: บุคคลภายนอกที่ส่งข้อความเข้ามา (เช่น LINE User ID หรือ Email Address)
 - **Message (ข้อความ)**: ข้อความสื่อสารเดี่ยวที่ส่งเข้าหรือออกจาก Conversation
 
 ### Ownership & Workflow (การมอบหมายและการรับผิดชอบ)
 - **Assignment (การมอบหมาย)**:
   - สถานะการรับผิดชอบ Conversation
-  - **Unassigned (ยังไม่ระบุ)**: ห้องแชทที่ยังไม่มีเจ้าหน้าที่รับผิดชอบ สมาชิกทุกคนในทีมเห็นได้
-  - **Claimed / Assigned (รับมอบหมายแล้ว)**: สถานะที่มี Staff คนใดคนหนึ่งกด "Claim" หรือถูกระบุตัวผู้รับผิดชอบ
-  - **Ownership Restriction**: เฉพาะ Staff ผู้เป็นเจ้าของ (Assigned Staff) หรือ `admin` เท่านั้นที่มีสิทธิ์พิมพ์ส่งข้อความหรืออนุมัติข้อความใน Conversation นั้น
+  - **Unassigned (ยังไม่ระบุ)**: ห้องแชทที่ยังไม่มีเจ้าหน้าที่รับผิดชอบ สมาชิกทุกคนในทีมเห็นได้ แต่ **ห้ามส่งข้อความตอบ**
+  - **Claimed / Assigned (รับมอบหมายแล้ว)**: สถานะที่มี Staff คนใดคนหนึ่งกด "Claim" (กระทำแบบ Atomic) หรือถูกระบุตัวผู้รับผิดชอบ
+  - **Ownership Restriction**: เฉพาะ Staff ผู้เป็นเจ้าของ (Assigned Staff) หรือ `admin` เท่านั้นที่มีสิทธิ์พิมพ์ส่งข้อความ (ทั้ง LINE และ Email)
+  - **Claim-Before-Send Rule**: เจ้าหน้าที่ไม่สามารถส่งข้อความในสถานะ Unassigned ได้ ต้องทำการ Claim ก่อนเสมอ
 
 ### Intelligence (ระบบปัญญาประดิษฐ์)
 - **AI Auto-Responder / Copilot**: ระบบช่วยสร้างคำตอบอัตโนมัติ (Google Gemini หรือ OpenAI) โดยอิงจาก Knowledge Base ของระบบ
@@ -41,7 +42,8 @@
 
 ## 2. Invariants & Business Rules (กฎทางธุรกิจที่ไม่สามารถละเมิดได้)
 
-1. **Strict Ownership on Sending**: Staff ไม่สามารถส่งข้อความใน Conversation ที่ถูก Claim โดย Staff คนอื่นได้
-2. **Channel Isolation**: ข้อความและ Conversation จะมองเห็นได้เฉพาะสมาชิกของ Team ที่เป็นเจ้าของ Channel นั้นเท่านั้น
-3. **AI Handoff Invariant**: ห้าม AI ตอบข้อความอัตโนมัติใน Conversation ที่มีสถานะ Claimed/Assigned
-4. **Admin Escalation**: สิทธิ์ `admin` สามารถดูได้ทุกทีม และสามารถ Overwrite / Reassign ข้อความในทุก Conversation ได้เสมอ
+1. **Strict Ownership on Sending (Claim-Before-Send)**: ข้อความขาออก (Outbound Messages ทั้ง LINE และ Email) จะส่งได้ต่อเมื่อห้องแชทนั้นถูก Claim แล้วเท่านั้น และผู้ส่งต้องเป็น Assigned Staff ของห้องนั้น หรือ `admin`
+2. **Channel Isolation**: ข้อความและ Conversation ทั้งหมดจะมองเห็นและเข้าถึงได้เฉพาะสมาชิกของ Team ที่เป็นเจ้าของ Channel นั้นเท่านั้น ผ่านการยืนยันตัวตน (Authenticated Session)
+3. **Atomic State Transition**: การ Claim และ Release Conversation ต้องทำงานแบบ Atomic ในระดับฐานข้อมูล เพื่อป้องกัน Concurrency Race Condition ระหว่างเจ้าหน้าที่
+4. **AI Handoff Invariant**: ห้าม AI ตอบข้อความอัตโนมัติใน Conversation ที่มีสถานะ Claimed/Assigned
+5. **Admin Escalation**: สิทธิ์ `admin` สามารถดูได้ทุกทีม และสามารถ Overwrite / Reassign ข้อความในทุก Conversation ได้เสมอ

@@ -110,10 +110,7 @@ const PUBLIC_API_PATHS = new Set([
   '/api/auth/setup',
   '/api/auth/login',
   '/api/webhook/line',
-  '/api/webhook/sheets',
-  '/api/inbox/conversations',
-  '/api/inbox/conversation',
-  '/api/inbox/clear-all'
+  '/api/webhook/sheets'
 ]);
 
 app.use((req, res, next) => {
@@ -217,16 +214,24 @@ app.all('/api/webhook/line', async (req, res) => {
 // ==========================================
 app.get('/api/inbox/conversations', (req, res) => {
   try {
+    const userChannels = db.getChannelsForUser(req.user);
+    const userChannelIds = new Set(userChannels.map(c => c.id));
+    const userHasChannel = (chId) => req.user && (req.user.role === 'admin' || userChannelIds.has(chId));
+
     const rawLineChats = db.getLineChats(100);
     const rawEmails = db.getEmails();
-    
-    // Group LINE chats by userId
+
+    // Group LINE chats by userId (filtered by channel ownership)
     const lineMap = {};
     for (const msg of rawLineChats) {
+      const msgChannelId = msg.channelId || db.defaultChannelId();
+      if (!userHasChannel(msgChannelId)) continue;
+
       const uid = msg.userId || 'guest';
       if (!lineMap[uid]) {
         lineMap[uid] = {
           id: uid,
+          channelId: msgChannelId,
           name: msg.userName && msg.userName !== 'AIZEN Store & Fashion' ? msg.userName : (uid === 'admin' ? 'เจ้าหน้าที่ร้าน' : 'ลูกค้า LINE'),
           avatar: msg.userAvatar || '',
           channel: 'line',
@@ -248,33 +253,36 @@ app.get('/api/inbox/conversations', (req, res) => {
       lineMap[uid].history = `${lineMap[uid].messages.length} รายการ`;
     }
 
-    // Group Emails
-    const emailList = rawEmails.map((em, idx) => ({
-      id: em.id || `em-${idx}`,
-      name: em.senderName || em.senderEmail || 'อีเมลลูกค้า',
-      avatar: '',
-      channel: 'email',
-      channelLabel: '✉ GMAIL',
-      status: em.status === 'replied' ? 'closed' : 'pending',
-      lead: em.subject || 'สอบถามข้อมูลผ่านอีเมล',
-      userCount: '1 บัญชี',
-      sync: 'Gmail / SQLite',
-      history: '1 รายการ',
-      emailSubject: em.subject,
-      lastTimestamp: em.timestamp,
-      messages: [
-        {
-          type: 'inbound',
-          text: em.body,
-          time: new Date(em.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ` · ${em.senderEmail}`
-        },
-        ...(em.draftReply ? [{
-          type: 'outbound',
-          text: em.draftReply,
-          time: 'แบบร่างตอบกลับ'
-        }] : [])
-      ]
-    }));
+    // Group Emails (filtered by channel ownership)
+    const emailList = rawEmails
+      .filter(em => !em.channelId || userHasChannel(em.channelId))
+      .map((em, idx) => ({
+        id: em.id || `em-${idx}`,
+        channelId: em.channelId || null,
+        name: em.senderName || em.senderEmail || 'อีเมลลูกค้า',
+        avatar: '',
+        channel: 'email',
+        channelLabel: '✉ GMAIL',
+        status: em.status === 'replied' ? 'closed' : 'pending',
+        lead: em.subject || 'สอบถามข้อมูลผ่านอีเมล',
+        userCount: '1 บัญชี',
+        sync: 'Gmail / SQLite',
+        history: '1 รายการ',
+        emailSubject: em.subject,
+        lastTimestamp: em.timestamp,
+        messages: [
+          {
+            type: 'inbound',
+            text: em.body,
+            time: new Date(em.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ` · ${em.senderEmail}`
+          },
+          ...(em.draftReply ? [{
+            type: 'outbound',
+            text: em.draftReply,
+            time: 'แบบร่างตอบกลับ'
+          }] : [])
+        ]
+      }));
 
     const allLineConvs = Object.values(lineMap);
     res.json({
@@ -407,14 +415,17 @@ async function handleLineSend(req, res) {
     const channel = channelId ? db.getChannelById(channelId) : null;
     const targetChannelId = channel ? channel.id : db.defaultChannelId();
 
-    // Strict Claim/Assign: a room owned by another staff member is closed to
-    // everyone except admins. Unassigned rooms stay claimable.
+    // Strict Claim/Assign: Claim-Before-Send.
+    // Unassigned rooms must be claimed first; owned rooms only allow the assigned staff or admin.
     if (userId && userId !== 'admin') {
       const conversation = db.ensureConversation(targetChannelId, userId, '');
       if (!auth.canReplyToConversation(req.user, conversation)) {
+        const msg = !conversation.assignedUserId
+          ? 'กรุณากดรับเรื่อง (Claim) ก่อนเริ่มตอบข้อความ'
+          : 'ห้องนี้อยู่ในการดูแลของเจ้าหน้าที่ท่านอื่น';
         return res.status(403).json({
           success: false,
-          error: 'ห้องนี้อยู่ในการดูแลของเจ้าหน้าที่ท่านอื่น'
+          error: msg
         });
       }
     }
@@ -463,14 +474,30 @@ async function handleLineSend(req, res) {
 // 3. GMAIL API & REAL EMAIL SENDING
 // ==========================================
 app.get('/api/emails', (req, res) => {
-  res.json({ success: true, emails: db.getEmails() });
+  const userChannels = db.getChannelsForUser(req.user);
+  const userChannelIds = new Set(userChannels.map(c => c.id));
+  const emails = db.getEmails().filter(em => !em.channelId || req.user.role === 'admin' || userChannelIds.has(em.channelId));
+  res.json({ success: true, emails });
 });
 
 app.post('/api/emails/send', async (req, res) => {
   try {
-    const { to, subject, text } = req.body;
+    const { to, subject, text, channelId, conversationId } = req.body;
     if (!to || !text) {
       return res.status(400).json({ error: 'Recipient (to) and message text are required' });
+    }
+
+    const channel = channelId ? db.getChannelById(channelId) : null;
+    const targetChannelId = channel ? channel.id : db.defaultChannelId();
+
+    // Strict Claim-Before-Send for emails if conversation exists or is created
+    const targetConversationId = conversationId || db.conversationId(targetChannelId, to);
+    const conversation = db.ensureConversation(targetChannelId, to, '');
+    if (!auth.canReplyToConversation(req.user, conversation)) {
+      const msg = !conversation.assignedUserId
+        ? 'กรุณากดรับเรื่อง (Claim) ก่อนเริ่มตอบอีเมล'
+        : 'อีเมลนี้อยู่ในการดูแลของเจ้าหน้าที่ท่านอื่น';
+      return res.status(403).json({ success: false, error: msg });
     }
 
     const result = await gmailService.sendEmail({ to, subject, text });
@@ -839,6 +866,14 @@ app.post('/api/teams/:id/channels', requireAdmin, (req, res) => {
 });
 
 app.post('/api/conversations/:id/claim', (req, res) => {
+  const conversation = db.getConversation(req.params.id);
+  if (!conversation) return res.status(404).json({ success: false, error: 'ไม่พบห้องสนทนา' });
+
+  const channel = db.getChannelById(conversation.channelId);
+  if (channel && !auth.isTeamMember(req.user, channel.teamId)) {
+    return forbidChannel(res);
+  }
+
   const result = db.claimConversation(req.params.id, req.user.id);
   if (result.error) {
     return res.status(409).json({ success: false, error: result.error, takenBy: result.takenBy || null });
@@ -848,6 +883,14 @@ app.post('/api/conversations/:id/claim', (req, res) => {
 });
 
 app.post('/api/conversations/:id/release', (req, res) => {
+  const conversation = db.getConversation(req.params.id);
+  if (!conversation) return res.status(404).json({ success: false, error: 'ไม่พบห้องสนทนา' });
+
+  const channel = db.getChannelById(conversation.channelId);
+  if (channel && !auth.isTeamMember(req.user, channel.teamId)) {
+    return forbidChannel(res);
+  }
+
   // Admins may release anyone's room; staff only their own.
   const result = db.releaseConversation(req.params.id, req.user.id, req.user.role === 'admin');
   if (result.error) {

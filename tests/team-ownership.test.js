@@ -66,8 +66,9 @@ test('claiming is first-come, release frees the room for AI again', () => {
   const channel = db.listChannels()[0];
   const conversation = db.ensureConversation(channel.id, 'U_customer1', 'ลูกค้า A');
 
-  // Unassigned: nobody owns it yet, so it is open to everyone in the team.
+  // Unassigned: nobody owns it yet, so staff cannot reply (Claim-Before-Send).
   assert.strictEqual(conversation.assignedUserId, null);
+  assert.ok(!auth.canReplyToConversation(alice, db.getConversation(conversation.id)));
 
   const claimed = db.claimConversation(conversation.id, alice.id);
   assert.strictEqual(claimed.conversation.assignedUserId, alice.id);
@@ -85,9 +86,10 @@ test('claiming is first-come, release frees the room for AI again', () => {
 
   // Bob cannot release Alice's room.
   assert.match(db.releaseConversation(conversation.id, bob.id, false).error, /ไม่ใช่เจ้าของ/);
-  // Alice can; afterwards the room is unassigned again so AI resumes.
+  // Alice can; afterwards the room is unassigned again so AI resumes and staff cannot reply until claimed.
   const released = db.releaseConversation(conversation.id, alice.id, false);
   assert.strictEqual(released.conversation.assignedUserId, null);
+  assert.ok(!auth.canReplyToConversation(alice, db.getConversation(conversation.id)));
 });
 
 test('conversation listing is scoped to the given channels', () => {
