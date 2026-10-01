@@ -903,6 +903,19 @@ app.post('/api/conversations/:id/release', (req, res) => {
 // ==========================================
 // 4.2 OPENAI & AI ENDPOINTS
 // ==========================================
+app.post('/api/openai/endpoint-test', requireAdmin, async (req, res) => {
+  try {
+    const { endpoint } = req.body || {};
+    const config = db.getConfig();
+    const useEndpoint = endpoint !== undefined ? endpoint : (config.openaiEndpoint || '');
+
+    const result = await aiService.testEndpointReachability(useEndpoint);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 app.post('/api/openai/models', requireAdmin, async (req, res) => {
   try {
     const { apiKey, endpoint } = req.body || {};

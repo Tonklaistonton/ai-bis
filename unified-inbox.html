@@ -3050,6 +3050,29 @@
       }
     }
 
+    async function testOpenAIEndpoint() {
+      const statusSpan = document.getElementById('test-endpoint-status');
+      if (statusSpan) statusSpan.textContent = 'กำลังทดสอบ...';
+      try {
+        const endpoint = document.getElementById('cfg-openai-endpoint').value.trim();
+        const res = await fetch('/api/openai/endpoint-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: endpoint })
+        });
+        const data = await res.json();
+        if (statusSpan) statusSpan.textContent = data.message || (data.success ? '✅ Endpoint ใช้งานได้' : '❌ Endpoint ใช้งานไม่ได้');
+        showToast(
+          data.success ? 'Endpoint ใช้งานได้' : 'Endpoint ใช้งานไม่ได้',
+          data.url ? data.url : (data.message || ''),
+          data.success ? '🔌' : '⚠️'
+        );
+      } catch (e) {
+        if (statusSpan) statusSpan.textContent = `❌ ${e.message}`;
+        showToast('ผิดพลาด', e.message, '❌');
+      }
+    }
+
     async function scanOpenAIModels() {
       const statusSpan = document.getElementById('scan-models-status');
       const datalist = document.getElementById('openai-models-datalist');
@@ -3227,6 +3250,11 @@
               <div class="admin-form-group">
                 <label>OpenAI Custom Endpoint (Base URL / Reverse Proxy)</label>
                 <input type="text" id="cfg-openai-endpoint" placeholder="https://api.openai.com/v1" />
+                <div class="admin-form-hint">เว้นว่างไว้ = ใช้ api.openai.com โดยตรง · ใส่เองได้ เช่น https://openrouter.ai/api/v1 หรือ http://localhost:11434/v1</div>
+                <div class="admin-btn-row" style="margin-top: 6px;">
+                  <button type="button" class="admin-btn admin-btn-test" onclick="testOpenAIEndpoint()">🔌 ทดสอบ Endpoint</button>
+                  <span id="test-endpoint-status" style="font-size: var(--text-2xs); color: var(--muted);"></span>
+                </div>
               </div>
             </div>
 
