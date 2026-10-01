@@ -328,6 +328,11 @@
       gap: 3px;
       background: var(--surface-subtle);
       overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
     }
     .filter-btn {
       flex: 1;
@@ -1744,9 +1749,9 @@
     <!-- Column 1: Conversations List -->
     <aside class="sidebar-list" data-od-id="sidebar-conversations">
       <div class="filter-tabs" data-od-id="inbox-filter-tabs">
-        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">ทั้งหมด (12)</button>
-        <button class="filter-btn" data-filter="pending" onclick="setFilter('pending', this)">รอเจ้าหน้าที่ (3)</button>
-        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed', this)">ปิดเคส (5)</button>
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">ทั้งหมด (0)</button>
+        <button class="filter-btn" data-filter="pending" onclick="setFilter('pending', this)">รอเจ้าหน้าที่ (0)</button>
+        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed', this)">ปิดเคส (0)</button>
         <button class="filter-btn" data-filter="line" onclick="setFilter('line', this)">LINE OA</button>
         <button class="filter-btn" data-filter="email" onclick="setFilter('email', this)">อีเมล</button>
       </div>
@@ -2706,6 +2711,21 @@
       const container = document.getElementById('conv-list-container');
       if (!container) return;
       const keys = Object.keys(CONV_DATA);
+
+      let total = keys.length;
+      let pending = 0;
+      let closed = 0;
+      keys.forEach(k => {
+        if (CONV_DATA[k].status === 'closed') closed++;
+        else pending++;
+      });
+
+      const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+      const pendingBtn = document.querySelector('.filter-btn[data-filter="pending"]');
+      const closedBtn = document.querySelector('.filter-btn[data-filter="closed"]');
+      if (allBtn) allBtn.innerText = `ทั้งหมด (${total})`;
+      if (pendingBtn) pendingBtn.innerText = `รอเจ้าหน้าที่ (${pending})`;
+      if (closedBtn) closedBtn.innerText = `ปิดเคส (${closed})`;
 
       if (keys.length === 0) {
         container.innerHTML = `
