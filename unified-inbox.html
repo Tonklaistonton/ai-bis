@@ -2954,6 +2954,8 @@
         // Fill Form Fields
         document.getElementById('cfg-gemini-key').placeholder = adminConfigData.geminiApiKey || 'กรอก Gemini API Key...';
         document.getElementById('cfg-openai-key').placeholder = adminConfigData.openaiApiKey || 'กรอก OpenAI API Key...';
+        document.getElementById('cfg-openai-model').value = adminConfigData.openaiModel || 'gpt-4o-mini';
+        document.getElementById('cfg-openai-endpoint').value = adminConfigData.openaiEndpoint || '';
         document.getElementById('cfg-ai-provider').value = adminConfigData.aiProvider || 'gemini';
         document.getElementById('cfg-mode').value = adminConfigData.mode || 'copilot';
 
@@ -2999,6 +3001,12 @@
         const openKey = document.getElementById('cfg-openai-key').value.trim();
         if (openKey) payload.openaiApiKey = openKey;
 
+        const openModel = document.getElementById('cfg-openai-model').value.trim();
+        if (openModel) payload.openaiModel = openModel;
+
+        const openEndpoint = document.getElementById('cfg-openai-endpoint').value.trim();
+        if (openEndpoint !== undefined) payload.openaiEndpoint = openEndpoint;
+
         payload.aiProvider = document.getElementById('cfg-ai-provider').value;
         payload.mode = document.getElementById('cfg-mode').value;
 
@@ -3042,9 +3050,38 @@
       }
     }
 
+    async function scanOpenAIModels() {
+      const statusSpan = document.getElementById('scan-models-status');
+      const datalist = document.getElementById('openai-models-datalist');
+      if (statusSpan) statusSpan.textContent = 'กำลังสแกนรายชื่อโมเดล...';
+      try {
+        const key = document.getElementById('cfg-openai-key').value.trim();
+        const endpoint = document.getElementById('cfg-openai-endpoint').value.trim();
+        const res = await fetch('/api/openai/models', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey: key, endpoint: endpoint })
+        });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.models) && data.models.length > 0) {
+          if (datalist) {
+            datalist.innerHTML = data.models.map(m => `<option value="${m}"></option>`).join('');
+          }
+          if (statusSpan) statusSpan.textContent = `✅ พบ ${data.models.length} โมเดล (คลิกหรือพิมพ์เพื่อเลือก)`;
+          showToast('สแกนโมเดลสำเร็จ', `พบ ${data.models.length} โมเดลที่พร้อมใช้งาน`, '🤖');
+        } else {
+          if (statusSpan) statusSpan.textContent = `❌ ${data.message || 'ไม่พบโมเดล'}`;
+          showToast('สแกนโมเดลไม่สำเร็จ', data.message || 'กรุณาตรวจสอบ Key หรือ Endpoint', '⚠️');
+        }
+      } catch (e) {
+        if (statusSpan) statusSpan.textContent = `❌ ${e.message}`;
+        showToast('ผิดพลาด', e.message, '❌');
+      }
+    }
+
     async function testGeminiAPI() {
       const statusSpan = document.getElementById('test-gemini-status');
-      statusSpan.textContent = 'กำลังทดสอบ...';
+      statusSpan.textContent = 'กำลังทดสอบ Gemini...';
       try {
         const key = document.getElementById('cfg-gemini-key').value.trim();
         const res = await fetch('/api/ai/test', {
@@ -3054,6 +3091,25 @@
         });
         const data = await res.json();
         statusSpan.textContent = data.success ? '✅ เชื่อมต่อ Gemini สำเร็จ' : `❌ ไม่ผ่าน: ${data.message}`;
+      } catch(e) {
+        statusSpan.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    async function testOpenAIAPI() {
+      const statusSpan = document.getElementById('test-openai-status');
+      statusSpan.textContent = 'กำลังทดสอบ OpenAI...';
+      try {
+        const key = document.getElementById('cfg-openai-key').value.trim();
+        const model = document.getElementById('cfg-openai-model').value.trim();
+        const endpoint = document.getElementById('cfg-openai-endpoint').value.trim();
+        const res = await fetch('/api/openai/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey: key, model: model, endpoint: endpoint })
+        });
+        const data = await res.json();
+        statusSpan.textContent = data.success ? `✅ OpenAI: ${data.reply || 'เชื่อมต่อสำเร็จ'}` : `❌ ${data.message}`;
       } catch(e) {
         statusSpan.textContent = `❌ ${e.message}`;
       }
@@ -3158,9 +3214,27 @@
               <input type="password" id="cfg-openai-key" placeholder="sk-..." />
             </div>
 
+            <div class="admin-grid-2">
+              <div class="admin-form-group">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <label>OpenAI Model</label>
+                  <button type="button" class="chip" onclick="scanOpenAIModels()" style="font-size: 10px; padding: 1px 6px; cursor: pointer;">🔍 สแกนโมเดล</button>
+                </div>
+                <input type="text" id="cfg-openai-model" list="openai-models-datalist" placeholder="gpt-4o-mini" />
+                <datalist id="openai-models-datalist"></datalist>
+                <div id="scan-models-status" style="font-size: var(--text-2xs); color: var(--muted); margin-top: 2px;"></div>
+              </div>
+              <div class="admin-form-group">
+                <label>OpenAI Custom Endpoint (Base URL / Reverse Proxy)</label>
+                <input type="text" id="cfg-openai-endpoint" placeholder="https://api.openai.com/v1" />
+              </div>
+            </div>
+
             <div class="admin-btn-row">
               <button class="admin-btn admin-btn-test" onclick="testGeminiAPI()">🔌 ทดสอบการเชื่อมต่อ Gemini</button>
-              <span id="test-gemini-status" style="font-size: var(--text-xs); color: var(--muted);"></span>
+              <button class="admin-btn admin-btn-test" onclick="testOpenAIAPI()" style="margin-left: 8px;">🔌 ทดสอบการเชื่อมต่อ OpenAI</button>
+              <span id="test-gemini-status" style="font-size: var(--text-xs); color: var(--muted); margin-left: 8px;"></span>
+              <span id="test-openai-status" style="font-size: var(--text-xs); color: var(--muted); margin-left: 8px;"></span>
             </div>
           </div>
         </div>

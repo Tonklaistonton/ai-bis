@@ -901,8 +901,68 @@ app.post('/api/conversations/:id/release', (req, res) => {
 });
 
 // ==========================================
-// 4.2 OPENAI API TEST ENDPOINT
+// 4.2 OPENAI & AI ENDPOINTS
 // ==========================================
+app.post('/api/openai/models', requireAdmin, async (req, res) => {
+  try {
+    const { apiKey, endpoint } = req.body || {};
+    const config = db.getConfig();
+    const useKey = apiKey || config.openaiApiKey;
+    const useEndpoint = endpoint || config.openaiEndpoint || '';
+
+    const result = await aiService.listOpenAIModels(useKey, useEndpoint);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.post('/api/openai/test', requireAdmin, async (req, res) => {
+  try {
+    const { apiKey, model, endpoint } = req.body || {};
+    const config = db.getConfig();
+    const useKey = apiKey || config.openaiApiKey;
+    const useModel = model || config.openaiModel || 'gpt-4o-mini';
+    const useEndpoint = endpoint || config.openaiEndpoint || '';
+
+    const result = await aiService.testOpenAIConnection(useKey, useModel, useEndpoint);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.post('/api/openai/chat', async (req, res) => {
+  try {
+    const { message, model, channel, metadata, endpoint } = req.body || {};
+    if (!message || !message.trim()) {
+      return res.status(400).json({ success: false, error: 'message is required' });
+    }
+
+    const config = db.getConfig();
+    const apiKey = config.openaiApiKey;
+    if (!apiKey) {
+      return res.status(400).json({ success: false, error: 'OpenAI API Key is not configured' });
+    }
+
+    const chosenModel = model || config.openaiModel || 'gpt-4o-mini';
+    const chosenEndpoint = endpoint || config.openaiEndpoint || '';
+    const reply = await aiService.callOpenAIAPI(
+      apiKey,
+      chosenModel,
+      message.trim(),
+      channel || 'line',
+      db.getKnowledge(),
+      metadata || {},
+      chosenEndpoint
+    );
+
+    res.json({ success: true, reply, model: chosenModel });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.post('/api/ai/suggest', async (req, res) => {
   try {
     const { message, channel, tone, subject, senderName } = req.body || {};
