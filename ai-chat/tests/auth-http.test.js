@@ -20,6 +20,7 @@ const DB = path.join(os.tmpdir(), `aizen-http-${process.pid}.db`);
 for (const suffix of ['', '-wal', '-shm']) fs.rmSync(DB + suffix, { force: true });
 process.env.DB_FILE = DB;
 process.env.PORT = String(PORT);
+process.env.AIZEN_SKIP_LOGIN = '0';
 
 test.before(async () => {
   // server.js starts listening on require; wait for the port to answer.

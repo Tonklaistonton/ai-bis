@@ -7,7 +7,7 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "node server.js --prod",
-    "test": "node --test \"tests/**/*.test.js\"",
+    "test": "node --test --test-force-exit \"tests/**/*.test.js\"",
     "tunnel": "npx localtunnel --port 3000 --subdomain aizen-line-bot"
   },
   "keywords": [
@@ -25,9 +25,14 @@
     "express": "^4.19.2",
     "localtunnel": "^2.0.2",
     "next": "^16.3.7",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^10.0.13",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "ws": "^8.17.0"
+  },
+  "overrides": {
+    "localtunnel": {
+      "axios": "^1.20.0"
+    }
   }
 }
