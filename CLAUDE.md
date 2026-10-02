@@ -38,6 +38,7 @@ Nodemailer was upgraded to `^10.0.13`. Localtunnel 2.0.2 pins vulnerable Axios 0
 - Added CI, tracked lockfile, deterministic authentication test configuration, and test-runner termination.
 - Added repository agents under `.claude/agents/` for coordination, backend, frontend, integrations, and review. These are Claude Code helpers, not GitHub Actions jobs.
 - Local verification on Windows / Node 25.9.0: 51 tests passed, production build passed, `npm audit` reported zero vulnerabilities. Actual GitHub Ubuntu / Node 22 execution is a separate check; these local results do not prove hosted CI success.
+- First hosted CI run: 50/51 tests passed; migration regression assumed an ignored local archive existed. Fixed `tests/auth-db.test.js` to assert both legacy paths resolve beside the temporary DB, without requiring production files. Focused verification: 18/18 tests passed locally; hosted rerun still required.
 - Live Gmail delivery and public tunnel connections were not tested. No hosting deployment was configured.
 
 ## Architecture

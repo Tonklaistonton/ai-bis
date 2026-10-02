@@ -198,9 +198,9 @@ test('a second migration run is a no-op', () => {
 test('the migrator never reaches outside the directory of its own database file', () => {
   // Regression guard: a test/preview run with DB_FILE set must not rename the
   // customer's real data/database.json.
-  const repoReal = path.join(__dirname, '..', 'data', 'database.json.migrated.json');
+  const repoData = path.join(__dirname, '..', 'data');
   const scoped = legacyPathFor();
-  assert.strictEqual(path.dirname(scoped.json), path.dirname(db.DB_FILE));
-  assert.notStrictEqual(scoped.json, repoReal, 'this test DB is in a temp dir, not the repo data folder');
-  assert.ok(fs.existsSync(repoReal), "the repo's real archived database must be untouched");
+  assert.notStrictEqual(path.dirname(db.DB_FILE), repoData);
+  assert.strictEqual(scoped.json, legacyPath);
+  assert.strictEqual(scoped.archive, legacyArchive);
 });
